@@ -9,38 +9,341 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as ResetPasswordRouteImport } from './routes/reset-password'
+import { Route as LoginRouteImport } from './routes/login'
+import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
+import { Route as AcceptInvitationRouteImport } from './routes/accept-invitation'
+import { Route as AdminRouteImport } from './routes/_admin'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AdminSupportRouteImport } from './routes/_admin/support'
+import { Route as AdminSubscriptionRouteImport } from './routes/_admin/subscription'
+import { Route as AdminStudentsRouteImport } from './routes/_admin/students'
+import { Route as AdminSettingsRouteImport } from './routes/_admin/settings'
+import { Route as AdminReportsRouteImport } from './routes/_admin/reports'
+import { Route as AdminPaymentsRouteImport } from './routes/_admin/payments'
+import { Route as AdminLessonsRouteImport } from './routes/_admin/lessons'
+import { Route as AdminInstructorsRouteImport } from './routes/_admin/instructors'
+import { Route as AdminDashboardRouteImport } from './routes/_admin/dashboard'
+import { Route as AdminBrandingRouteImport } from './routes/_admin/branding'
+import { Route as AdminBranchesRouteImport } from './routes/_admin/branches'
+import { Route as AdminAuditRouteImport } from './routes/_admin/audit'
+import { Route as AdminStudentsNewRouteImport } from './routes/_admin/students.new'
+import { Route as AdminStudentsIdRouteImport } from './routes/_admin/students.$id'
+import { Route as AdminReceiptsIdRouteImport } from './routes/_admin/receipts.$id'
+import { Route as AdminPaymentsNewRouteImport } from './routes/_admin/payments.new'
+import { Route as AdminReceiptsIdPrintRouteImport } from './routes/_admin/receipts.$id.print'
 
+const ResetPasswordRoute = ResetPasswordRouteImport.update({
+  id: '/reset-password',
+  path: '/reset-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ForgotPasswordRoute = ForgotPasswordRouteImport.update({
+  id: '/forgot-password',
+  path: '/forgot-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AcceptInvitationRoute = AcceptInvitationRouteImport.update({
+  id: '/accept-invitation',
+  path: '/accept-invitation',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminRoute = AdminRouteImport.update({
+  id: '/_admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminSupportRoute = AdminSupportRouteImport.update({
+  id: '/support',
+  path: '/support',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminSubscriptionRoute = AdminSubscriptionRouteImport.update({
+  id: '/subscription',
+  path: '/subscription',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminStudentsRoute = AdminStudentsRouteImport.update({
+  id: '/students',
+  path: '/students',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminSettingsRoute = AdminSettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminReportsRoute = AdminReportsRouteImport.update({
+  id: '/reports',
+  path: '/reports',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminPaymentsRoute = AdminPaymentsRouteImport.update({
+  id: '/payments',
+  path: '/payments',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminLessonsRoute = AdminLessonsRouteImport.update({
+  id: '/lessons',
+  path: '/lessons',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminInstructorsRoute = AdminInstructorsRouteImport.update({
+  id: '/instructors',
+  path: '/instructors',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminDashboardRoute = AdminDashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminBrandingRoute = AdminBrandingRouteImport.update({
+  id: '/branding',
+  path: '/branding',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminBranchesRoute = AdminBranchesRouteImport.update({
+  id: '/branches',
+  path: '/branches',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminAuditRoute = AdminAuditRouteImport.update({
+  id: '/audit',
+  path: '/audit',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminStudentsNewRoute = AdminStudentsNewRouteImport.update({
+  id: '/new',
+  path: '/new',
+  getParentRoute: () => AdminStudentsRoute,
+} as any)
+const AdminStudentsIdRoute = AdminStudentsIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => AdminStudentsRoute,
+} as any)
+const AdminReceiptsIdRoute = AdminReceiptsIdRouteImport.update({
+  id: '/receipts/$id',
+  path: '/receipts/$id',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminPaymentsNewRoute = AdminPaymentsNewRouteImport.update({
+  id: '/new',
+  path: '/new',
+  getParentRoute: () => AdminPaymentsRoute,
+} as any)
+const AdminReceiptsIdPrintRoute = AdminReceiptsIdPrintRouteImport.update({
+  id: '/print',
+  path: '/print',
+  getParentRoute: () => AdminReceiptsIdRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/accept-invitation': typeof AcceptInvitationRoute
+  '/forgot-password': typeof ForgotPasswordRoute
+  '/login': typeof LoginRoute
+  '/reset-password': typeof ResetPasswordRoute
+  '/audit': typeof AdminAuditRoute
+  '/branches': typeof AdminBranchesRoute
+  '/branding': typeof AdminBrandingRoute
+  '/dashboard': typeof AdminDashboardRoute
+  '/instructors': typeof AdminInstructorsRoute
+  '/lessons': typeof AdminLessonsRoute
+  '/payments': typeof AdminPaymentsRouteWithChildren
+  '/reports': typeof AdminReportsRoute
+  '/settings': typeof AdminSettingsRoute
+  '/students': typeof AdminStudentsRouteWithChildren
+  '/subscription': typeof AdminSubscriptionRoute
+  '/support': typeof AdminSupportRoute
+  '/payments/new': typeof AdminPaymentsNewRoute
+  '/receipts/$id': typeof AdminReceiptsIdRouteWithChildren
+  '/students/$id': typeof AdminStudentsIdRoute
+  '/students/new': typeof AdminStudentsNewRoute
+  '/receipts/$id/print': typeof AdminReceiptsIdPrintRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/accept-invitation': typeof AcceptInvitationRoute
+  '/forgot-password': typeof ForgotPasswordRoute
+  '/login': typeof LoginRoute
+  '/reset-password': typeof ResetPasswordRoute
+  '/audit': typeof AdminAuditRoute
+  '/branches': typeof AdminBranchesRoute
+  '/branding': typeof AdminBrandingRoute
+  '/dashboard': typeof AdminDashboardRoute
+  '/instructors': typeof AdminInstructorsRoute
+  '/lessons': typeof AdminLessonsRoute
+  '/payments': typeof AdminPaymentsRouteWithChildren
+  '/reports': typeof AdminReportsRoute
+  '/settings': typeof AdminSettingsRoute
+  '/students': typeof AdminStudentsRouteWithChildren
+  '/subscription': typeof AdminSubscriptionRoute
+  '/support': typeof AdminSupportRoute
+  '/payments/new': typeof AdminPaymentsNewRoute
+  '/receipts/$id': typeof AdminReceiptsIdRouteWithChildren
+  '/students/$id': typeof AdminStudentsIdRoute
+  '/students/new': typeof AdminStudentsNewRoute
+  '/receipts/$id/print': typeof AdminReceiptsIdPrintRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/_admin': typeof AdminRouteWithChildren
+  '/accept-invitation': typeof AcceptInvitationRoute
+  '/forgot-password': typeof ForgotPasswordRoute
+  '/login': typeof LoginRoute
+  '/reset-password': typeof ResetPasswordRoute
+  '/_admin/audit': typeof AdminAuditRoute
+  '/_admin/branches': typeof AdminBranchesRoute
+  '/_admin/branding': typeof AdminBrandingRoute
+  '/_admin/dashboard': typeof AdminDashboardRoute
+  '/_admin/instructors': typeof AdminInstructorsRoute
+  '/_admin/lessons': typeof AdminLessonsRoute
+  '/_admin/payments': typeof AdminPaymentsRouteWithChildren
+  '/_admin/reports': typeof AdminReportsRoute
+  '/_admin/settings': typeof AdminSettingsRoute
+  '/_admin/students': typeof AdminStudentsRouteWithChildren
+  '/_admin/subscription': typeof AdminSubscriptionRoute
+  '/_admin/support': typeof AdminSupportRoute
+  '/_admin/payments/new': typeof AdminPaymentsNewRoute
+  '/_admin/receipts/$id': typeof AdminReceiptsIdRouteWithChildren
+  '/_admin/students/$id': typeof AdminStudentsIdRoute
+  '/_admin/students/new': typeof AdminStudentsNewRoute
+  '/_admin/receipts/$id/print': typeof AdminReceiptsIdPrintRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/accept-invitation'
+    | '/forgot-password'
+    | '/login'
+    | '/reset-password'
+    | '/audit'
+    | '/branches'
+    | '/branding'
+    | '/dashboard'
+    | '/instructors'
+    | '/lessons'
+    | '/payments'
+    | '/reports'
+    | '/settings'
+    | '/students'
+    | '/subscription'
+    | '/support'
+    | '/payments/new'
+    | '/receipts/$id'
+    | '/students/$id'
+    | '/students/new'
+    | '/receipts/$id/print'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/accept-invitation'
+    | '/forgot-password'
+    | '/login'
+    | '/reset-password'
+    | '/audit'
+    | '/branches'
+    | '/branding'
+    | '/dashboard'
+    | '/instructors'
+    | '/lessons'
+    | '/payments'
+    | '/reports'
+    | '/settings'
+    | '/students'
+    | '/subscription'
+    | '/support'
+    | '/payments/new'
+    | '/receipts/$id'
+    | '/students/$id'
+    | '/students/new'
+    | '/receipts/$id/print'
+  id:
+    | '__root__'
+    | '/'
+    | '/_admin'
+    | '/accept-invitation'
+    | '/forgot-password'
+    | '/login'
+    | '/reset-password'
+    | '/_admin/audit'
+    | '/_admin/branches'
+    | '/_admin/branding'
+    | '/_admin/dashboard'
+    | '/_admin/instructors'
+    | '/_admin/lessons'
+    | '/_admin/payments'
+    | '/_admin/reports'
+    | '/_admin/settings'
+    | '/_admin/students'
+    | '/_admin/subscription'
+    | '/_admin/support'
+    | '/_admin/payments/new'
+    | '/_admin/receipts/$id'
+    | '/_admin/students/$id'
+    | '/_admin/students/new'
+    | '/_admin/receipts/$id/print'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AdminRoute: typeof AdminRouteWithChildren
+  AcceptInvitationRoute: typeof AcceptInvitationRoute
+  ForgotPasswordRoute: typeof ForgotPasswordRoute
+  LoginRoute: typeof LoginRoute
+  ResetPasswordRoute: typeof ResetPasswordRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/reset-password': {
+      id: '/reset-password'
+      path: '/reset-password'
+      fullPath: '/reset-password'
+      preLoaderRoute: typeof ResetPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/forgot-password': {
+      id: '/forgot-password'
+      path: '/forgot-password'
+      fullPath: '/forgot-password'
+      preLoaderRoute: typeof ForgotPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/accept-invitation': {
+      id: '/accept-invitation'
+      path: '/accept-invitation'
+      fullPath: '/accept-invitation'
+      preLoaderRoute: typeof AcceptInvitationRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_admin': {
+      id: '/_admin'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -48,11 +351,207 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_admin/support': {
+      id: '/_admin/support'
+      path: '/support'
+      fullPath: '/support'
+      preLoaderRoute: typeof AdminSupportRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/_admin/subscription': {
+      id: '/_admin/subscription'
+      path: '/subscription'
+      fullPath: '/subscription'
+      preLoaderRoute: typeof AdminSubscriptionRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/_admin/students': {
+      id: '/_admin/students'
+      path: '/students'
+      fullPath: '/students'
+      preLoaderRoute: typeof AdminStudentsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/_admin/settings': {
+      id: '/_admin/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof AdminSettingsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/_admin/reports': {
+      id: '/_admin/reports'
+      path: '/reports'
+      fullPath: '/reports'
+      preLoaderRoute: typeof AdminReportsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/_admin/payments': {
+      id: '/_admin/payments'
+      path: '/payments'
+      fullPath: '/payments'
+      preLoaderRoute: typeof AdminPaymentsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/_admin/lessons': {
+      id: '/_admin/lessons'
+      path: '/lessons'
+      fullPath: '/lessons'
+      preLoaderRoute: typeof AdminLessonsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/_admin/instructors': {
+      id: '/_admin/instructors'
+      path: '/instructors'
+      fullPath: '/instructors'
+      preLoaderRoute: typeof AdminInstructorsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/_admin/dashboard': {
+      id: '/_admin/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof AdminDashboardRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/_admin/branding': {
+      id: '/_admin/branding'
+      path: '/branding'
+      fullPath: '/branding'
+      preLoaderRoute: typeof AdminBrandingRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/_admin/branches': {
+      id: '/_admin/branches'
+      path: '/branches'
+      fullPath: '/branches'
+      preLoaderRoute: typeof AdminBranchesRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/_admin/audit': {
+      id: '/_admin/audit'
+      path: '/audit'
+      fullPath: '/audit'
+      preLoaderRoute: typeof AdminAuditRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/_admin/students/new': {
+      id: '/_admin/students/new'
+      path: '/new'
+      fullPath: '/students/new'
+      preLoaderRoute: typeof AdminStudentsNewRouteImport
+      parentRoute: typeof AdminStudentsRoute
+    }
+    '/_admin/students/$id': {
+      id: '/_admin/students/$id'
+      path: '/$id'
+      fullPath: '/students/$id'
+      preLoaderRoute: typeof AdminStudentsIdRouteImport
+      parentRoute: typeof AdminStudentsRoute
+    }
+    '/_admin/receipts/$id': {
+      id: '/_admin/receipts/$id'
+      path: '/receipts/$id'
+      fullPath: '/receipts/$id'
+      preLoaderRoute: typeof AdminReceiptsIdRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/_admin/payments/new': {
+      id: '/_admin/payments/new'
+      path: '/new'
+      fullPath: '/payments/new'
+      preLoaderRoute: typeof AdminPaymentsNewRouteImport
+      parentRoute: typeof AdminPaymentsRoute
+    }
+    '/_admin/receipts/$id/print': {
+      id: '/_admin/receipts/$id/print'
+      path: '/print'
+      fullPath: '/receipts/$id/print'
+      preLoaderRoute: typeof AdminReceiptsIdPrintRouteImport
+      parentRoute: typeof AdminReceiptsIdRoute
+    }
   }
 }
 
+interface AdminPaymentsRouteChildren {
+  AdminPaymentsNewRoute: typeof AdminPaymentsNewRoute
+}
+
+const AdminPaymentsRouteChildren: AdminPaymentsRouteChildren = {
+  AdminPaymentsNewRoute: AdminPaymentsNewRoute,
+}
+
+const AdminPaymentsRouteWithChildren = AdminPaymentsRoute._addFileChildren(
+  AdminPaymentsRouteChildren,
+)
+
+interface AdminStudentsRouteChildren {
+  AdminStudentsIdRoute: typeof AdminStudentsIdRoute
+  AdminStudentsNewRoute: typeof AdminStudentsNewRoute
+}
+
+const AdminStudentsRouteChildren: AdminStudentsRouteChildren = {
+  AdminStudentsIdRoute: AdminStudentsIdRoute,
+  AdminStudentsNewRoute: AdminStudentsNewRoute,
+}
+
+const AdminStudentsRouteWithChildren = AdminStudentsRoute._addFileChildren(
+  AdminStudentsRouteChildren,
+)
+
+interface AdminReceiptsIdRouteChildren {
+  AdminReceiptsIdPrintRoute: typeof AdminReceiptsIdPrintRoute
+}
+
+const AdminReceiptsIdRouteChildren: AdminReceiptsIdRouteChildren = {
+  AdminReceiptsIdPrintRoute: AdminReceiptsIdPrintRoute,
+}
+
+const AdminReceiptsIdRouteWithChildren = AdminReceiptsIdRoute._addFileChildren(
+  AdminReceiptsIdRouteChildren,
+)
+
+interface AdminRouteChildren {
+  AdminAuditRoute: typeof AdminAuditRoute
+  AdminBranchesRoute: typeof AdminBranchesRoute
+  AdminBrandingRoute: typeof AdminBrandingRoute
+  AdminDashboardRoute: typeof AdminDashboardRoute
+  AdminInstructorsRoute: typeof AdminInstructorsRoute
+  AdminLessonsRoute: typeof AdminLessonsRoute
+  AdminPaymentsRoute: typeof AdminPaymentsRouteWithChildren
+  AdminReportsRoute: typeof AdminReportsRoute
+  AdminSettingsRoute: typeof AdminSettingsRoute
+  AdminStudentsRoute: typeof AdminStudentsRouteWithChildren
+  AdminSubscriptionRoute: typeof AdminSubscriptionRoute
+  AdminSupportRoute: typeof AdminSupportRoute
+  AdminReceiptsIdRoute: typeof AdminReceiptsIdRouteWithChildren
+}
+
+const AdminRouteChildren: AdminRouteChildren = {
+  AdminAuditRoute: AdminAuditRoute,
+  AdminBranchesRoute: AdminBranchesRoute,
+  AdminBrandingRoute: AdminBrandingRoute,
+  AdminDashboardRoute: AdminDashboardRoute,
+  AdminInstructorsRoute: AdminInstructorsRoute,
+  AdminLessonsRoute: AdminLessonsRoute,
+  AdminPaymentsRoute: AdminPaymentsRouteWithChildren,
+  AdminReportsRoute: AdminReportsRoute,
+  AdminSettingsRoute: AdminSettingsRoute,
+  AdminStudentsRoute: AdminStudentsRouteWithChildren,
+  AdminSubscriptionRoute: AdminSubscriptionRoute,
+  AdminSupportRoute: AdminSupportRoute,
+  AdminReceiptsIdRoute: AdminReceiptsIdRouteWithChildren,
+}
+
+const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AdminRoute: AdminRouteWithChildren,
+  AcceptInvitationRoute: AcceptInvitationRoute,
+  ForgotPasswordRoute: ForgotPasswordRoute,
+  LoginRoute: LoginRoute,
+  ResetPasswordRoute: ResetPasswordRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
