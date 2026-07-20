@@ -1,3 +1,4 @@
+// ma-nees
 export type StudentStatus = "active" | "completed" | "on_leave" | "archived";
 export type PaymentStatus = "paid" | "partial" | "unpaid";
 export type PaymentMethod = "cash" | "esewa" | "bank_transfer" | "other";
@@ -82,3 +83,4 @@ export interface SupportTicket {
   createdAt: string;
   description: string;
 }
+

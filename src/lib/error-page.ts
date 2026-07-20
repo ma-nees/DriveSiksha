@@ -1,3 +1,4 @@
+// ma-nees
 export function renderErrorPage(): string {
   return `<!doctype html>
 <html lang="en">
@@ -28,3 +29,4 @@ export function renderErrorPage(): string {
   </body>
 </html>`;
 }
+

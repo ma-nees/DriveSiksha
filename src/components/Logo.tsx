@@ -1,3 +1,4 @@
+// ma-nees
 import logoUrl from "@/assets/Logo.png";
 
 export function Logo({ size = 32, className = "" }: { size?: number; className?: string }) {
@@ -28,4 +29,5 @@ export function LogoWithName({ size = 32 }: { size?: number }) {
     </div>
   );
 }
+
 

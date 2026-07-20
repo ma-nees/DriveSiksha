@@ -1,3 +1,4 @@
+// ma-nees
 import { Card, CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import type { LucideIcon } from "lucide-react";
@@ -57,3 +58,4 @@ export function StatCard({ label, value, hint, icon: Icon, tone = "brand", trend
     </Card>
   );
 }
+

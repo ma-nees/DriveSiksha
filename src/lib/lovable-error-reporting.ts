@@ -1,3 +1,4 @@
+// ma-nees
 type LovableErrorOptions = {
   mechanism?: "manual" | "onerror" | "unhandledrejection" | "react_error_boundary";
   handled?: boolean;
@@ -34,3 +35,4 @@ export function reportLovableError(error: unknown, context: Record<string, unkno
     },
   );
 }
+

@@ -1,3 +1,4 @@
+// ma-nees
 import type { Branch, Instructor, Student, Payment, AuditLog, SupportTicket } from "./types";
 
 export const currentSchool = {
@@ -164,3 +165,4 @@ export const plans = [
   { name: "Professional", price: 19999, features: ["10 Branches", "Up to 2000 students", "100 Instructors", "Full analytics", "Phone + email support"] },
   { name: "Enterprise", price: 39999, features: ["Unlimited branches", "Unlimited students", "Unlimited instructors", "Custom integrations", "Dedicated manager"] },
 ];
+

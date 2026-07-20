@@ -1,3 +1,4 @@
+// ma-nees
 import { createFileRoute, Outlet } from "@tanstack/react-router";
 import { SidebarContent } from "@/components/layout/Sidebar";
 import { Header } from "@/components/layout/Header";
@@ -25,3 +26,4 @@ function AdminLayout() {
     </div>
   );
 }
+

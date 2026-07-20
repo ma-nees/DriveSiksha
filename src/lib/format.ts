@@ -1,3 +1,4 @@
+// ma-nees
 export function formatNPR(amount: number): string {
   return "NPR " + new Intl.NumberFormat("en-IN").format(Math.round(amount));
 }
@@ -79,3 +80,4 @@ export function numberToWords(n: number): string {
   if (rest) result += threeDigit(rest);
   return result.trim() + " Rupees Only";
 }
+

@@ -1,3 +1,4 @@
+// ma-nees
 import { cn } from "@/lib/utils";
 
 type Tone = "success" | "warning" | "danger" | "info" | "neutral" | "brand";
@@ -25,3 +26,4 @@ export function StatusBadge({ tone = "neutral", children, className }: { tone?: 
     </span>
   );
 }
+
