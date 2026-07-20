@@ -2,6 +2,23 @@ export function formatNPR(amount: number): string {
   return "NPR " + new Intl.NumberFormat("en-IN").format(Math.round(amount));
 }
 
+export function formatCompactNepali(amount: number, withSymbol = false): string {
+  const prefix = withSymbol ? "NPR " : "";
+  if (Math.abs(amount) >= 10000000) {
+    const cr = (amount / 10000000).toFixed(2).replace(/\.00$/, "").replace(/(\.\d)0$/, "$1");
+    return `${prefix}${cr} Cr`;
+  }
+  if (Math.abs(amount) >= 100000) {
+    const lakh = (amount / 100000).toFixed(2).replace(/\.00$/, "").replace(/(\.\d)0$/, "$1");
+    return `${prefix}${lakh} L`;
+  }
+  if (Math.abs(amount) >= 1000) {
+    const k = (amount / 1000).toFixed(0);
+    return `${prefix}${k}k`;
+  }
+  return `${prefix}${amount}`;
+}
+
 export function formatDate(iso: string): string {
   const d = new Date(iso);
   return d.toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" });
@@ -16,6 +33,24 @@ export function formatDateTime(iso: string): string {
     hour: "2-digit",
     minute: "2-digit",
   });
+}
+
+export function formatBSDate(isoOrDate: string | Date): string {
+  const d = new Date(isoOrDate);
+  const adYear = d.getFullYear();
+  const adMonth = d.getMonth() + 1;
+  const adDay = d.getDate();
+
+  let bsYear = adYear + 56;
+  let bsMonth = adMonth + 8;
+  if (bsMonth > 12) {
+    bsMonth -= 12;
+    bsYear += 1;
+  }
+  const bsDay = Math.min(adDay, 30);
+  const mm = String(bsMonth).padStart(2, "0");
+  const dd = String(bsDay).padStart(2, "0");
+  return `${bsYear}-${mm}-${dd}`;
 }
 
 export function numberToWords(n: number): string {

@@ -27,10 +27,13 @@ import { Route as AdminDashboardRouteImport } from './routes/_admin/dashboard'
 import { Route as AdminBrandingRouteImport } from './routes/_admin/branding'
 import { Route as AdminBranchesRouteImport } from './routes/_admin/branches'
 import { Route as AdminAuditRouteImport } from './routes/_admin/audit'
+import { Route as AdminStudentsIndexRouteImport } from './routes/_admin/students.index'
+import { Route as AdminPaymentsIndexRouteImport } from './routes/_admin/payments.index'
 import { Route as AdminStudentsNewRouteImport } from './routes/_admin/students.new'
 import { Route as AdminStudentsIdRouteImport } from './routes/_admin/students.$id'
 import { Route as AdminReceiptsIdRouteImport } from './routes/_admin/receipts.$id'
 import { Route as AdminPaymentsNewRouteImport } from './routes/_admin/payments.new'
+import { Route as AdminReceiptsIdIndexRouteImport } from './routes/_admin/receipts.$id.index'
 import { Route as AdminReceiptsIdPrintRouteImport } from './routes/_admin/receipts.$id.print'
 
 const ResetPasswordRoute = ResetPasswordRouteImport.update({
@@ -122,6 +125,16 @@ const AdminAuditRoute = AdminAuditRouteImport.update({
   path: '/audit',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminStudentsIndexRoute = AdminStudentsIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AdminStudentsRoute,
+} as any)
+const AdminPaymentsIndexRoute = AdminPaymentsIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AdminPaymentsRoute,
+} as any)
 const AdminStudentsNewRoute = AdminStudentsNewRouteImport.update({
   id: '/new',
   path: '/new',
@@ -141,6 +154,11 @@ const AdminPaymentsNewRoute = AdminPaymentsNewRouteImport.update({
   id: '/new',
   path: '/new',
   getParentRoute: () => AdminPaymentsRoute,
+} as any)
+const AdminReceiptsIdIndexRoute = AdminReceiptsIdIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AdminReceiptsIdRoute,
 } as any)
 const AdminReceiptsIdPrintRoute = AdminReceiptsIdPrintRouteImport.update({
   id: '/print',
@@ -170,7 +188,10 @@ export interface FileRoutesByFullPath {
   '/receipts/$id': typeof AdminReceiptsIdRouteWithChildren
   '/students/$id': typeof AdminStudentsIdRoute
   '/students/new': typeof AdminStudentsNewRoute
+  '/payments/': typeof AdminPaymentsIndexRoute
+  '/students/': typeof AdminStudentsIndexRoute
   '/receipts/$id/print': typeof AdminReceiptsIdPrintRoute
+  '/receipts/$id/': typeof AdminReceiptsIdIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -184,17 +205,17 @@ export interface FileRoutesByTo {
   '/dashboard': typeof AdminDashboardRoute
   '/instructors': typeof AdminInstructorsRoute
   '/lessons': typeof AdminLessonsRoute
-  '/payments': typeof AdminPaymentsRouteWithChildren
   '/reports': typeof AdminReportsRoute
   '/settings': typeof AdminSettingsRoute
-  '/students': typeof AdminStudentsRouteWithChildren
   '/subscription': typeof AdminSubscriptionRoute
   '/support': typeof AdminSupportRoute
   '/payments/new': typeof AdminPaymentsNewRoute
-  '/receipts/$id': typeof AdminReceiptsIdRouteWithChildren
   '/students/$id': typeof AdminStudentsIdRoute
   '/students/new': typeof AdminStudentsNewRoute
+  '/payments': typeof AdminPaymentsIndexRoute
+  '/students': typeof AdminStudentsIndexRoute
   '/receipts/$id/print': typeof AdminReceiptsIdPrintRoute
+  '/receipts/$id': typeof AdminReceiptsIdIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -220,7 +241,10 @@ export interface FileRoutesById {
   '/_admin/receipts/$id': typeof AdminReceiptsIdRouteWithChildren
   '/_admin/students/$id': typeof AdminStudentsIdRoute
   '/_admin/students/new': typeof AdminStudentsNewRoute
+  '/_admin/payments/': typeof AdminPaymentsIndexRoute
+  '/_admin/students/': typeof AdminStudentsIndexRoute
   '/_admin/receipts/$id/print': typeof AdminReceiptsIdPrintRoute
+  '/_admin/receipts/$id/': typeof AdminReceiptsIdIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -246,7 +270,10 @@ export interface FileRouteTypes {
     | '/receipts/$id'
     | '/students/$id'
     | '/students/new'
+    | '/payments/'
+    | '/students/'
     | '/receipts/$id/print'
+    | '/receipts/$id/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -260,17 +287,17 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/instructors'
     | '/lessons'
-    | '/payments'
     | '/reports'
     | '/settings'
-    | '/students'
     | '/subscription'
     | '/support'
     | '/payments/new'
-    | '/receipts/$id'
     | '/students/$id'
     | '/students/new'
+    | '/payments'
+    | '/students'
     | '/receipts/$id/print'
+    | '/receipts/$id'
   id:
     | '__root__'
     | '/'
@@ -295,7 +322,10 @@ export interface FileRouteTypes {
     | '/_admin/receipts/$id'
     | '/_admin/students/$id'
     | '/_admin/students/new'
+    | '/_admin/payments/'
+    | '/_admin/students/'
     | '/_admin/receipts/$id/print'
+    | '/_admin/receipts/$id/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -435,6 +465,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminAuditRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/_admin/students/': {
+      id: '/_admin/students/'
+      path: '/'
+      fullPath: '/students/'
+      preLoaderRoute: typeof AdminStudentsIndexRouteImport
+      parentRoute: typeof AdminStudentsRoute
+    }
+    '/_admin/payments/': {
+      id: '/_admin/payments/'
+      path: '/'
+      fullPath: '/payments/'
+      preLoaderRoute: typeof AdminPaymentsIndexRouteImport
+      parentRoute: typeof AdminPaymentsRoute
+    }
     '/_admin/students/new': {
       id: '/_admin/students/new'
       path: '/new'
@@ -463,6 +507,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminPaymentsNewRouteImport
       parentRoute: typeof AdminPaymentsRoute
     }
+    '/_admin/receipts/$id/': {
+      id: '/_admin/receipts/$id/'
+      path: '/'
+      fullPath: '/receipts/$id/'
+      preLoaderRoute: typeof AdminReceiptsIdIndexRouteImport
+      parentRoute: typeof AdminReceiptsIdRoute
+    }
     '/_admin/receipts/$id/print': {
       id: '/_admin/receipts/$id/print'
       path: '/print'
@@ -475,10 +526,12 @@ declare module '@tanstack/react-router' {
 
 interface AdminPaymentsRouteChildren {
   AdminPaymentsNewRoute: typeof AdminPaymentsNewRoute
+  AdminPaymentsIndexRoute: typeof AdminPaymentsIndexRoute
 }
 
 const AdminPaymentsRouteChildren: AdminPaymentsRouteChildren = {
   AdminPaymentsNewRoute: AdminPaymentsNewRoute,
+  AdminPaymentsIndexRoute: AdminPaymentsIndexRoute,
 }
 
 const AdminPaymentsRouteWithChildren = AdminPaymentsRoute._addFileChildren(
@@ -488,11 +541,13 @@ const AdminPaymentsRouteWithChildren = AdminPaymentsRoute._addFileChildren(
 interface AdminStudentsRouteChildren {
   AdminStudentsIdRoute: typeof AdminStudentsIdRoute
   AdminStudentsNewRoute: typeof AdminStudentsNewRoute
+  AdminStudentsIndexRoute: typeof AdminStudentsIndexRoute
 }
 
 const AdminStudentsRouteChildren: AdminStudentsRouteChildren = {
   AdminStudentsIdRoute: AdminStudentsIdRoute,
   AdminStudentsNewRoute: AdminStudentsNewRoute,
+  AdminStudentsIndexRoute: AdminStudentsIndexRoute,
 }
 
 const AdminStudentsRouteWithChildren = AdminStudentsRoute._addFileChildren(
@@ -501,10 +556,12 @@ const AdminStudentsRouteWithChildren = AdminStudentsRoute._addFileChildren(
 
 interface AdminReceiptsIdRouteChildren {
   AdminReceiptsIdPrintRoute: typeof AdminReceiptsIdPrintRoute
+  AdminReceiptsIdIndexRoute: typeof AdminReceiptsIdIndexRoute
 }
 
 const AdminReceiptsIdRouteChildren: AdminReceiptsIdRouteChildren = {
   AdminReceiptsIdPrintRoute: AdminReceiptsIdPrintRoute,
+  AdminReceiptsIdIndexRoute: AdminReceiptsIdIndexRoute,
 }
 
 const AdminReceiptsIdRouteWithChildren = AdminReceiptsIdRoute._addFileChildren(

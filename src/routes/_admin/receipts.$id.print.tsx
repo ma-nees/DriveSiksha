@@ -23,8 +23,8 @@ function PrintPage() {
         <Button variant="ghost" size="sm" asChild><Link to="/receipts/$id" params={{ id: p.receiptNo }}><ArrowLeft className="h-4 w-4 mr-1" />Back</Link></Button>
         <Button size="sm" onClick={() => window.print()} className="bg-brand hover:bg-brand/90 text-brand-foreground"><Printer className="h-4 w-4 mr-1.5" />Print A4</Button>
       </div>
-      <div className="print-area mx-auto bg-white text-black" style={{ width: "210mm", minHeight: "297mm", padding: "8mm", boxShadow: "0 10px 40px rgba(0,0,0,.15)" }}>
-        <div className="grid grid-cols-2 gap-3" style={{ height: "281mm" }}>
+      <div className="print-area receipt-print-wrapper mx-auto bg-white text-black p-4 md:p-[8mm] shadow-lg md:shadow-[0_10px_40px_rgba(0,0,0,0.15)] rounded-xl border md:border-none">
+        <div className="receipt-print-grid">
           {copies.map((label) => (
             <div key={label} className="border border-dashed border-gray-400 p-3 flex flex-col" style={{ fontSize: "10px" }}>
               <div className="flex justify-between items-start pb-2 border-b border-gray-300">

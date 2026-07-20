@@ -1,9 +1,9 @@
-import logoAsset from "@/assets/drivesiksha-logo.png.asset.json";
+import logoUrl from "@/assets/Logo.png";
 
 export function Logo({ size = 32, className = "" }: { size?: number; className?: string }) {
   return (
     <img
-      src={logoAsset.url}
+      src={logoUrl}
       alt="DriveSiksha"
       width={size}
       height={size}
@@ -28,3 +28,4 @@ export function LogoWithName({ size = 32 }: { size?: number }) {
     </div>
   );
 }
+

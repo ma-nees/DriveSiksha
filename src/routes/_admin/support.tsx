@@ -24,6 +24,39 @@ const statusTone = { open: "warning", in_progress: "info", resolved: "success", 
 
 function SupportPage() {
   const [open, setOpen] = useState(false);
+  const [ticketsList, setTicketsList] = useState(supportTickets);
+
+  // Form state
+  const [subject, setSubject] = useState("");
+  const [category, setCategory] = useState("technical-bug");
+  const [priority, setPriority] = useState<"low" | "medium" | "high">("medium");
+  const [description, setDescription] = useState("");
+
+  const handleSubmitTicket = () => {
+    if (!subject.trim()) {
+      toast.error("Please enter a ticket subject.");
+      return;
+    }
+
+    const newTicket = {
+      id: `t${Date.now()}`,
+      subject,
+      category,
+      priority,
+      status: "open" as const,
+      createdAt: new Date().toISOString(),
+      description,
+    };
+
+    setTicketsList([newTicket, ...ticketsList]);
+    toast.success("Ticket submitted successfully. We'll get back to you soon!");
+    setOpen(false);
+
+    // Reset
+    setSubject("");
+    setDescription("");
+  };
+
   return (
     <>
       <PageHeader title="Contact support" description="Get help from the DriveSiksha team."
@@ -32,28 +65,57 @@ function SupportPage() {
             <DialogTrigger asChild>
               <Button size="sm" className="bg-accent-red hover:bg-accent-red/90 text-accent-red-foreground"><Plus className="h-4 w-4 mr-1.5" />New ticket</Button>
             </DialogTrigger>
-            <DialogContent>
+            <DialogContent className="sm:max-w-[500px]">
               <DialogHeader><DialogTitle>Open a support ticket</DialogTitle></DialogHeader>
-              <div className="space-y-3">
-                <div><Label className="text-xs mb-1 block">Subject</Label><Input className="h-11" /></div>
-                <div className="grid grid-cols-2 gap-2">
-                  <div><Label className="text-xs mb-1 block">Category</Label>
-                    <Select><SelectTrigger className="h-11"><SelectValue placeholder="Select" /></SelectTrigger>
-                      <SelectContent><SelectItem value="bug">Bug</SelectItem><SelectItem value="q">Question</SelectItem><SelectItem value="p">Payment</SelectItem><SelectItem value="f">Feature request</SelectItem></SelectContent>
+              <div className="space-y-3.5 py-2">
+                <div>
+                  <Label className="text-xs font-medium mb-1 block">Subject *</Label>
+                  <Input value={subject} onChange={(e) => setSubject(e.target.value)} placeholder="e.g. Cannot update student record" className="h-10" />
+                </div>
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <Label className="text-xs font-medium mb-1 block">Category *</Label>
+                    <Select value={category} onValueChange={setCategory}>
+                      <SelectTrigger className="h-10"><SelectValue placeholder="Select category" /></SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="Student Management">Student Management</SelectItem>
+                        <SelectItem value="Instructor Management">Instructor Management</SelectItem>
+                        <SelectItem value="Lesson Booking">Lesson Booking</SelectItem>
+                        <SelectItem value="Vehicle Management">Vehicle Management</SelectItem>
+                        <SelectItem value="Payments & Billing">Payments & Billing</SelectItem>
+                        <SelectItem value="Reports & Analytics">Reports & Analytics</SelectItem>
+                        <SelectItem value="Technical Bug">Technical Bug</SelectItem>
+                        <SelectItem value="Feature Request">Feature Request</SelectItem>
+                        <SelectItem value="General Inquiry">General Inquiry</SelectItem>
+                        <SelectItem value="Other">Other</SelectItem>
+                      </SelectContent>
                     </Select>
                   </div>
-                  <div><Label className="text-xs mb-1 block">Priority</Label>
-                    <Select defaultValue="medium"><SelectTrigger className="h-11"><SelectValue /></SelectTrigger>
-                      <SelectContent><SelectItem value="low">Low</SelectItem><SelectItem value="medium">Medium</SelectItem><SelectItem value="high">High</SelectItem></SelectContent>
+                  <div>
+                    <Label className="text-xs font-medium mb-1 block">Priority *</Label>
+                    <Select value={priority} onValueChange={(v) => setPriority(v as any)}>
+                      <SelectTrigger className="h-10"><SelectValue /></SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="low">Low</SelectItem>
+                        <SelectItem value="medium">Medium</SelectItem>
+                        <SelectItem value="high">High</SelectItem>
+                      </SelectContent>
                     </Select>
                   </div>
                 </div>
-                <div><Label className="text-xs mb-1 block">Description</Label><Textarea rows={4} /></div>
-                <div><Label className="text-xs mb-1 block">Attachment</Label><Input type="file" className="h-11 cursor-pointer" /></div>
+
+                <div>
+                  <Label className="text-xs font-medium mb-1 block">Description</Label>
+                  <Textarea value={description} onChange={(e) => setDescription(e.target.value)} rows={3} placeholder="Describe the issue or request in detail…" />
+                </div>
+                <div>
+                  <Label className="text-xs font-medium mb-1 block">Attachment (Optional)</Label>
+                  <Input type="file" className="h-10 cursor-pointer" />
+                </div>
               </div>
               <DialogFooter>
                 <Button variant="outline" onClick={() => setOpen(false)}>Cancel</Button>
-                <Button onClick={() => { toast.success("Ticket submitted. We'll get back to you soon."); setOpen(false); }} className="bg-brand text-brand-foreground">Submit ticket</Button>
+                <Button onClick={handleSubmitTicket} className="bg-brand text-brand-foreground hover:bg-brand/90">Submit ticket</Button>
               </DialogFooter>
             </DialogContent>
           </Dialog>
@@ -73,7 +135,7 @@ function SupportPage() {
       <Card>
         <CardHeader><CardTitle className="text-base">Your tickets</CardTitle></CardHeader>
         <CardContent className="divide-y">
-          {supportTickets.map((t) => (
+          {ticketsList.map((t) => (
             <div key={t.id} className="py-4 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
               <div className="min-w-0">
                 <div className="font-medium truncate">{t.subject}</div>
@@ -83,7 +145,7 @@ function SupportPage() {
               <div className="flex items-center gap-2">
                 <StatusBadge tone={priorityTone[t.priority]}>{t.priority}</StatusBadge>
                 <StatusBadge tone={statusTone[t.status]}>{t.status.replace("_", " ")}</StatusBadge>
-                <Button variant="outline" size="sm">View</Button>
+                <Button variant="outline" size="sm" onClick={() => toast.info(`Ticket details: ${t.subject}`)}>View</Button>
               </div>
             </div>
           ))}

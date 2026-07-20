@@ -170,9 +170,151 @@
   scrollbar-width: none;
 }
 
-@media print {
-  body * { visibility: hidden; }
-  .print-area, .print-area * { visibility: visible; }
-  .print-area { position: absolute; left: 0; top: 0; width: 100%; }
-  .no-print { display: none !important; }
+@media screen {
+  .print-only {
+    display: none !important;
+  }
 }
+
+@media print {
+  @page {
+    size: A4 portrait;
+    margin: 12mm 15mm 12mm 15mm;
+  }
+
+  body {
+    background: #ffffff !important;
+    color: #000000 !important;
+    font-size: 12px !important;
+  }
+
+  aside,
+  header,
+  nav,
+  button,
+  .no-print,
+  .print-hidden,
+  .toast,
+  [role="status"],
+  [role="dialog"] {
+    display: none !important;
+  }
+
+  main,
+  #root,
+  .print-area,
+  .printable-content,
+  .print-only,
+  .print\:block,
+  .hidden.print\:block {
+    display: block !important;
+    visibility: visible !important;
+    position: static !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    box-shadow: none !important;
+    background: #ffffff !important;
+    color: #000000 !important;
+  }
+
+  .print-area *,
+  .printable-content *,
+  .print-only * {
+    visibility: visible !important;
+  }
+
+  /* Selective background fills for PDF report badges & header tiles */
+  .bg-slate-50,
+  .bg-gray-50 {
+    background-color: #f9fafb !important;
+  }
+  .bg-slate-100,
+  .bg-gray-100 {
+    background-color: #f3f4f6 !important;
+  }
+  .bg-emerald-50 {
+    background-color: #ecfdf5 !important;
+  }
+  .bg-amber-50 {
+    background-color: #fffbeb !important;
+  }
+  .bg-slate-900,
+  .bg-gray-900,
+  .bg-black {
+    background-color: #111827 !important;
+  }
+
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  /* Prevent page break inside table rows */
+  tr, .break-inside-avoid {
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+
+  /* Display tfoot as normal row group so total row ONLY prints once at the bottom of the table */
+  tfoot {
+    display: table-row-group !important;
+  }
+}
+
+/* Hide Lovable / gpt-engineer badge and watermark */
+#lovable-badge,
+#gpt-engineer-badge,
+.lovable-badge,
+.gpt-engineer-badge {
+  display: none !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
+/* Screen/Responsive Styles for 4-up receipt print */
+.receipt-print-wrapper {
+  width: 100%;
+  max-width: 100%;
+  min-height: auto;
+  box-sizing: border-box;
+}
+
+.receipt-print-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+  height: auto;
+}
+
+@media (min-width: 768px) {
+  .receipt-print-wrapper {
+    width: 210mm;
+    min-height: 297mm;
+  }
+  
+  .receipt-print-grid {
+    grid-template-columns: repeat(2, 1fr);
+    height: 281mm;
+  }
+}
+
+/* Print Styles for 4-up receipt print */
+@media print {
+  .receipt-print-wrapper {
+    width: 210mm !important;
+    min-height: 297mm !important;
+    padding: 8mm !important;
+    box-shadow: none !important;
+    margin: 0 !important;
+    border: none !important;
+  }
+  
+  .receipt-print-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 3mm !important;
+    height: 281mm !important;
+  }
+}
+

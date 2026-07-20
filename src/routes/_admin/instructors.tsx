@@ -11,6 +11,8 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { Search, Plus, MoreVertical, Eye, Edit, CalendarClock } from "lucide-react";
 import { instructors, branches } from "@/lib/mock-data";
 import { toast } from "sonner";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
 
 export const Route = createFileRoute("/_admin/instructors")({
   component: InstructorsPage,
@@ -24,12 +26,102 @@ function InstructorsPage() {
     instructors.filter((i) => (branch === "all" || i.branchId === branch) && (!q || i.name.toLowerCase().includes(q.toLowerCase())))
   , [q, branch]);
 
+  // Add Instructor Modal state
+  const [isAddOpen, setIsAddOpen] = useState(false);
+  const [newName, setNewName] = useState("");
+  const [newPhone, setNewPhone] = useState("");
+  const [newBranchId, setNewBranchId] = useState("b1");
+  const [newLicense, setNewLicense] = useState("B");
+
+  const handleAddInstructor = () => {
+    if (!newName || !newPhone) {
+      toast.error("Please fill in Name and Phone number");
+      return;
+    }
+
+    const selectedBranch = branches.find((b) => b.id === newBranchId) || branches[0];
+
+    instructors.unshift({
+      id: `i${instructors.length + 1}`,
+      name: newName,
+      phone: newPhone,
+      branchId: newBranchId,
+      branch: selectedBranch.name,
+      assignedStudents: 0,
+      todayLessons: 0,
+      licenseCategory: newLicense,
+      leaveStatus: "available",
+      accountStatus: "active"
+    });
+
+    toast.success("Instructor registered successfully!");
+    setIsAddOpen(false);
+
+    // Reset Form
+    setNewName("");
+    setNewPhone("");
+    setNewBranchId("b1");
+    setNewLicense("B");
+  };
+
   return (
     <>
       <PageHeader title="Instructors" description={filtered.length + " instructors"} actions={
-        <Button size="sm" className="h-9 bg-accent-red hover:bg-accent-red/90 text-accent-red-foreground" onClick={() => toast.success("Add instructor form opened")}>
-          <Plus className="h-4 w-4 mr-1.5" />Add Instructor
-        </Button>
+        <Dialog open={isAddOpen} onOpenChange={setIsAddOpen}>
+          <DialogTrigger asChild>
+            <Button size="sm" className="h-9 bg-accent-red hover:bg-accent-red/90 text-accent-red-foreground">
+              <Plus className="h-4 w-4 mr-1.5" />Add Instructor
+            </Button>
+          </DialogTrigger>
+          <DialogContent className="sm:max-w-[425px]">
+            <DialogHeader>
+              <DialogTitle>Add Instructor</DialogTitle>
+            </DialogHeader>
+            <div className="grid gap-4 py-4">
+              <div className="grid gap-2">
+                <Label htmlFor="name" className="text-xs font-semibold">Full Name *</Label>
+                <Input id="name" value={newName} onChange={(e) => setNewName(e.target.value)} placeholder="e.g. Ram Bahadur Gurung" className="h-10" />
+              </div>
+              <div className="grid gap-2">
+                <Label htmlFor="phone" className="text-xs font-semibold">Phone Number *</Label>
+                <Input
+                  id="phone"
+                  type="tel"
+                  value={newPhone}
+                  onChange={(e) => setNewPhone(e.target.value.replace(/[^0-9+]/g, ""))}
+                  placeholder="+977 98..."
+                  className="h-10"
+                />
+              </div>
+              <div className="grid gap-2">
+                <Label htmlFor="branch" className="text-xs font-semibold">Branch *</Label>
+                <Select value={newBranchId} onValueChange={setNewBranchId}>
+                  <SelectTrigger className="h-10"><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                    {branches.map(b => <SelectItem key={b.id} value={b.id}>{b.name}</SelectItem>)}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="grid gap-2">
+                <Label htmlFor="license" className="text-xs font-semibold">License Category *</Label>
+                <Select value={newLicense} onValueChange={setNewLicense}>
+                  <SelectTrigger className="h-10"><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="B">Car (B)</SelectItem>
+                    <SelectItem value="A">Motorbike (A)</SelectItem>
+                    <SelectItem value="B, A">Car & Motorbike (B, A)</SelectItem>
+                    <SelectItem value="B, C">Car & Heavy (B, C)</SelectItem>
+                    <SelectItem value="A, B, C">All (A, B, C)</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+            <DialogFooter>
+              <Button variant="outline" onClick={() => setIsAddOpen(false)} className="h-10">Cancel</Button>
+              <Button onClick={handleAddInstructor} className="h-10 bg-accent-red hover:bg-accent-red/90 text-accent-red-foreground">Save Instructor</Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       } />
 
       <Card className="mb-4">

@@ -9,9 +9,10 @@ import { Textarea } from "@/components/ui/textarea";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Search, Receipt } from "lucide-react";
-import { students, currentUser } from "@/lib/mock-data";
+import { students, currentUser, payments } from "@/lib/mock-data";
 import { formatNPR } from "@/lib/format";
 import { toast } from "sonner";
+import { NepaliDatePicker } from "@/components/NepaliDatePicker";
 
 export const Route = createFileRoute("/_admin/payments/new")({
   component: RecordPayment,
@@ -26,6 +27,7 @@ function RecordPayment() {
   const [discount, setDiscount] = useState(0);
   const [charge, setCharge] = useState(0);
   const [notes, setNotes] = useState("");
+  const [paymentDate, setPaymentDate] = useState("2081-04-15");
   const navigate = useNavigate();
 
   const matches = useMemo(() =>
@@ -38,8 +40,32 @@ function RecordPayment() {
     e.preventDefault();
     if (net <= 0) { toast.error("Amount must be greater than zero"); return; }
     if (net > remaining) { toast.error("Amount exceeds remaining balance"); return; }
+    
+    const receiptNo = `RCP-2081-${(5000 + payments.length + 1).toString()}`;
+    
+    payments.unshift({
+      id: `p${payments.length + 1}`,
+      receiptNo: receiptNo,
+      studentId: selected.id,
+      studentName: selected.name,
+      amount: net,
+      method: method as any,
+      date: paymentDate,
+      branch: selected.branch,
+      receivedBy: currentUser.name,
+      status: "completed"
+    });
+
+    // Update student's amount paid
+    selected.amountPaid += net;
+    if (selected.amountPaid >= selected.courseFee) {
+      selected.paymentStatus = "paid";
+    } else if (selected.amountPaid > 0) {
+      selected.paymentStatus = "partial";
+    }
+
     toast.success("Payment recorded. Receipt generated.");
-    navigate({ to: "/receipts/$id", params: { id: "RCP-2081-5099" } });
+    navigate({ to: "/receipts/$id", params: { id: receiptNo } });
   }
 
   return (
@@ -82,10 +108,53 @@ function RecordPayment() {
             <CardHeader className="pb-3"><CardTitle className="text-base">Payment details</CardTitle></CardHeader>
             <CardContent className="space-y-4">
               <div className="grid gap-4 sm:grid-cols-2">
-                <div className="space-y-1.5"><Label>Payment amount (NPR)</Label><Input type="number" min={0} value={amount} onChange={(e) => setAmount(+e.target.value)} className="h-11" required /></div>
-                <div className="space-y-1.5"><Label>Payment date</Label><Input type="date" defaultValue={new Date().toISOString().slice(0, 10)} className="h-11" /></div>
-                <div className="space-y-1.5"><Label>Discount (NPR)</Label><Input type="number" min={0} value={discount} onChange={(e) => setDiscount(+e.target.value)} className="h-11" /></div>
-                <div className="space-y-1.5"><Label>Additional charge (NPR)</Label><Input type="number" min={0} value={charge} onChange={(e) => setCharge(+e.target.value)} className="h-11" /></div>
+                <div className="space-y-1.5">
+                  <Label>Payment amount (NPR)</Label>
+                  <Input
+                    type="text"
+                    inputMode="numeric"
+                    pattern="[0-9]*"
+                    value={amount === 0 ? "" : amount}
+                    onChange={(e) => {
+                      const clean = e.target.value.replace(/[^0-9]/g, "");
+                      setAmount(clean === "" ? 0 : Number(clean));
+                    }}
+                    className="h-11"
+                    required
+                  />
+                </div>
+                <div className="space-y-1.5">
+                  <Label>Payment date</Label>
+                  <NepaliDatePicker value={paymentDate} onChange={setPaymentDate} />
+                </div>
+                <div className="space-y-1.5">
+                  <Label>Discount (NPR)</Label>
+                  <Input
+                    type="text"
+                    inputMode="numeric"
+                    pattern="[0-9]*"
+                    value={discount === 0 ? "" : discount}
+                    onChange={(e) => {
+                      const clean = e.target.value.replace(/[^0-9]/g, "");
+                      setDiscount(clean === "" ? 0 : Number(clean));
+                    }}
+                    className="h-11"
+                  />
+                </div>
+                <div className="space-y-1.5">
+                  <Label>Additional charge (NPR)</Label>
+                  <Input
+                    type="text"
+                    inputMode="numeric"
+                    pattern="[0-9]*"
+                    value={charge === 0 ? "" : charge}
+                    onChange={(e) => {
+                      const clean = e.target.value.replace(/[^0-9]/g, "");
+                      setCharge(clean === "" ? 0 : Number(clean));
+                    }}
+                    className="h-11"
+                  />
+                </div>
               </div>
               <div>
                 <Label className="mb-2 block">Payment method</Label>

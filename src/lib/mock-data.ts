@@ -32,6 +32,8 @@ export const instructors: Instructor[] = [
   { id: "i6", name: "Deepa Shrestha", phone: "+977 9846667788", branchId: "b3", branch: "Bhaktapur Branch", assignedStudents: 12, todayLessons: 3, licenseCategory: "A, B", leaveStatus: "available", accountStatus: "active" },
 ];
 
+const BASE_DATE_TIME = new Date("2026-07-17T12:00:00Z").getTime();
+
 const firstNames = ["Anish", "Bibek", "Sushmita", "Pratik", "Sabina", "Rohit", "Nisha", "Ashish", "Puja", "Sagar", "Kritika", "Bishal", "Sarita", "Nabin", "Mamata", "Dipesh", "Anjali", "Prabin", "Rekha", "Suresh"];
 const lastNames = ["Sharma", "Shrestha", "Karki", "Thapa", "Rai", "Gurung", "Tamang", "Magar", "Bhandari", "Poudel", "Adhikari", "Basnet", "KC", "Maharjan"];
 const courses = ["Car (B)", "Motorbike (A)", "Heavy Vehicle (C)", "Scooter (A)"];
@@ -40,7 +42,7 @@ export const students: Student[] = Array.from({ length: 40 }).map((_, i) => {
   const branch = branches[i % branches.length];
   const inst = instructors.find((x) => x.branchId === branch.id) || instructors[0];
   const total = 20;
-  const completed = Math.floor(Math.random() * (total + 1));
+  const completed = (i * 7) % (total + 1);
   const fee = [18000, 22000, 25000, 32000, 45000][i % 5];
   const paid = i % 4 === 0 ? 0 : i % 3 === 0 ? Math.floor(fee / 2) : fee;
   const pStatus = paid === 0 ? "unpaid" : paid < fee ? "partial" : "paid";
@@ -61,7 +63,7 @@ export const students: Student[] = Array.from({ length: 40 }).map((_, i) => {
     amountPaid: paid,
     paymentStatus: pStatus,
     status: sStatus,
-    registeredAt: new Date(Date.now() - i * 3 * 86400000).toISOString(),
+    registeredAt: new Date(BASE_DATE_TIME - i * 3 * 86400000).toISOString(),
   };
 });
 
@@ -75,7 +77,7 @@ export const payments: Payment[] = Array.from({ length: 25 }).map((_, i) => {
     studentName: st.name,
     amount: [5000, 8000, 12000, 15000, 22000, 25000][i % 6],
     method: methods[i % 4],
-    date: new Date(Date.now() - i * 86400000).toISOString(),
+    date: new Date(BASE_DATE_TIME - i * 86400000).toISOString(),
     branch: st.branch,
     receivedBy: currentUser.name,
     status: "completed",
@@ -90,14 +92,14 @@ export const auditLogs: AuditLog[] = Array.from({ length: 30 }).map((_, i) => ({
   module: ["Students", "Payments", "Instructors", "Leave", "Students", "Branches"][i % 6],
   record: `#REC-${1000 + i}`,
   branch: branches[i % branches.length].name,
-  date: new Date(Date.now() - i * 3600000).toISOString(),
+  date: new Date(BASE_DATE_TIME - i * 3600000).toISOString(),
   ip: `192.168.1.${20 + i}`,
 }));
 
 export const supportTickets: SupportTicket[] = [
-  { id: "t1", subject: "Cannot print receipt in 4-up layout", category: "Bug", priority: "high", status: "in_progress", createdAt: new Date(Date.now() - 86400000).toISOString(), description: "The 4-up A4 print layout cuts off the footer." },
-  { id: "t2", subject: "How to add a new branch?", category: "Question", priority: "low", status: "resolved", createdAt: new Date(Date.now() - 3 * 86400000).toISOString(), description: "Need help adding a new branch under my current plan." },
-  { id: "t3", subject: "eSewa payment not reflecting", category: "Payment", priority: "high", status: "open", createdAt: new Date(Date.now() - 6 * 3600000).toISOString(), description: "Renewal payment via eSewa completed but not showing." },
+  { id: "t1", subject: "Cannot print receipt in 4-up layout", category: "Bug", priority: "high", status: "in_progress", createdAt: new Date(BASE_DATE_TIME - 86400000).toISOString(), description: "The 4-up A4 print layout cuts off the footer." },
+  { id: "t2", subject: "How to add a new branch?", category: "Question", priority: "low", status: "resolved", createdAt: new Date(BASE_DATE_TIME - 3 * 86400000).toISOString(), description: "Need help adding a new branch under my current plan." },
+  { id: "t3", subject: "eSewa payment not reflecting", category: "Payment", priority: "high", status: "open", createdAt: new Date(BASE_DATE_TIME - 6 * 3600000).toISOString(), description: "Renewal payment via eSewa completed but not showing." },
 ];
 
 // Charts

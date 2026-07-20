@@ -11,12 +11,13 @@ const toneStyles: Record<Tone, string> = {
   brand: "bg-brand/10 text-brand border-brand/20",
 };
 
-export function StatusBadge({ tone = "neutral", children }: { tone?: Tone; children: React.ReactNode }) {
+export function StatusBadge({ tone = "neutral", children, className }: { tone?: Tone; children: React.ReactNode; className?: string }) {
   return (
     <span
       className={cn(
         "inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-[11px] font-medium capitalize",
         toneStyles[tone],
+        className,
       )}
     >
       <span className="h-1.5 w-1.5 rounded-full bg-current opacity-70" />
