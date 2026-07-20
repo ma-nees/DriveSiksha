@@ -40,3 +40,4 @@ bun.lock
 package.json
 tsconfig.json
 vite.config.ts
+eslint.config.js
