@@ -5,12 +5,16 @@ import path from 'path';
 // Load environment variables from .env
 dotenv.config({ path: path.join(__dirname, '../../.env') });
 
-const supabaseUrl = process.env.SUPABASE_URL || '';
-const supabaseAnonKey = process.env.SUPABASE_ANON_KEY || '';
-const supabaseServiceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY || '';
+const rawUrl = process.env.SUPABASE_URL || '';
+const rawAnon = process.env.SUPABASE_ANON_KEY || '';
+const rawService = process.env.SUPABASE_SERVICE_ROLE_KEY || '';
 
-if (!supabaseUrl) {
-  console.error('SUPABASE_URL environment variable is missing!');
+const supabaseUrl = rawUrl && !rawUrl.includes('your-project-id') ? rawUrl : 'https://placeholder.supabase.co';
+const supabaseAnonKey = rawAnon && !rawAnon.includes('your-anon-key') ? rawAnon : 'placeholder-anon-key';
+const supabaseServiceRoleKey = rawService && !rawService.includes('your-service-role-key') ? rawService : 'placeholder-service-role-key';
+
+if (!rawUrl || rawUrl.includes('your-project-id')) {
+  console.warn('Backend running in demo fallback mode: Supabase environment variables are unset or placeholders.');
 }
 
 // Client for standard public actions
