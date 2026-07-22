@@ -83,4 +83,3 @@ export interface SupportTicket {
   createdAt: string;
   description: string;
 }
-

@@ -19,24 +19,156 @@ export const currentUser = {
 };
 
 export const branches: Branch[] = [
-  { id: "b1", name: "Baneshwor Main", address: "New Baneshwor, Kathmandu", manager: "Rajesh Karki", phone: "+977 9841234567", totalStudents: 128, totalInstructors: 8, monthlyRevenue: 685000, status: "active" },
-  { id: "b2", name: "Lalitpur Branch", address: "Kupondole, Lalitpur", manager: "Sita Maharjan", phone: "+977 9807654321", totalStudents: 84, totalInstructors: 5, monthlyRevenue: 425000, status: "active" },
-  { id: "b3", name: "Bhaktapur Branch", address: "Suryabinayak, Bhaktapur", manager: "Bikash Thapa", phone: "+977 9812345678", totalStudents: 62, totalInstructors: 4, monthlyRevenue: 310000, status: "active" },
+  {
+    id: "b1",
+    name: "Baneshwor Main",
+    address: "New Baneshwor, Kathmandu",
+    manager: "Rajesh Karki",
+    phone: "+977 9841234567",
+    totalStudents: 128,
+    totalInstructors: 8,
+    monthlyRevenue: 685000,
+    status: "active",
+  },
+  {
+    id: "b2",
+    name: "Lalitpur Branch",
+    address: "Kupondole, Lalitpur",
+    manager: "Sita Maharjan",
+    phone: "+977 9807654321",
+    totalStudents: 84,
+    totalInstructors: 5,
+    monthlyRevenue: 425000,
+    status: "active",
+  },
+  {
+    id: "b3",
+    name: "Bhaktapur Branch",
+    address: "Suryabinayak, Bhaktapur",
+    manager: "Bikash Thapa",
+    phone: "+977 9812345678",
+    totalStudents: 62,
+    totalInstructors: 4,
+    monthlyRevenue: 310000,
+    status: "active",
+  },
 ];
 
 export const instructors: Instructor[] = [
-  { id: "i1", name: "Ram Bahadur Gurung", phone: "+977 9841112233", branchId: "b1", branch: "Baneshwor Main", assignedStudents: 18, todayLessons: 6, licenseCategory: "B, C", leaveStatus: "available", accountStatus: "active" },
-  { id: "i2", name: "Krishna KC", phone: "+977 9842223344", branchId: "b1", branch: "Baneshwor Main", assignedStudents: 22, todayLessons: 7, licenseCategory: "B", leaveStatus: "available", accountStatus: "active" },
-  { id: "i3", name: "Sunita Rai", phone: "+977 9843334455", branchId: "b2", branch: "Lalitpur Branch", assignedStudents: 14, todayLessons: 4, licenseCategory: "B, A", leaveStatus: "on_leave", accountStatus: "active" },
-  { id: "i4", name: "Prakash Tamang", phone: "+977 9844445566", branchId: "b2", branch: "Lalitpur Branch", assignedStudents: 20, todayLessons: 5, licenseCategory: "B, C, D", leaveStatus: "available", accountStatus: "active" },
-  { id: "i5", name: "Manoj Adhikari", phone: "+977 9845556677", branchId: "b3", branch: "Bhaktapur Branch", assignedStudents: 16, todayLessons: 5, licenseCategory: "B", leaveStatus: "available", accountStatus: "active" },
-  { id: "i6", name: "Deepa Shrestha", phone: "+977 9846667788", branchId: "b3", branch: "Bhaktapur Branch", assignedStudents: 12, todayLessons: 3, licenseCategory: "A, B", leaveStatus: "available", accountStatus: "active" },
+  {
+    id: "i1",
+    name: "Ram Bahadur Gurung",
+    phone: "+977 9841112233",
+    branchId: "b1",
+    branch: "Baneshwor Main",
+    assignedStudents: 18,
+    todayLessons: 6,
+    licenseCategory: "B, C",
+    leaveStatus: "available",
+    accountStatus: "active",
+  },
+  {
+    id: "i2",
+    name: "Krishna KC",
+    phone: "+977 9842223344",
+    branchId: "b1",
+    branch: "Baneshwor Main",
+    assignedStudents: 22,
+    todayLessons: 7,
+    licenseCategory: "B",
+    leaveStatus: "available",
+    accountStatus: "active",
+  },
+  {
+    id: "i3",
+    name: "Sunita Rai",
+    phone: "+977 9843334455",
+    branchId: "b2",
+    branch: "Lalitpur Branch",
+    assignedStudents: 14,
+    todayLessons: 4,
+    licenseCategory: "B, A",
+    leaveStatus: "on_leave",
+    accountStatus: "active",
+  },
+  {
+    id: "i4",
+    name: "Prakash Tamang",
+    phone: "+977 9844445566",
+    branchId: "b2",
+    branch: "Lalitpur Branch",
+    assignedStudents: 20,
+    todayLessons: 5,
+    licenseCategory: "B, C, D",
+    leaveStatus: "available",
+    accountStatus: "active",
+  },
+  {
+    id: "i5",
+    name: "Manoj Adhikari",
+    phone: "+977 9845556677",
+    branchId: "b3",
+    branch: "Bhaktapur Branch",
+    assignedStudents: 16,
+    todayLessons: 5,
+    licenseCategory: "B",
+    leaveStatus: "available",
+    accountStatus: "active",
+  },
+  {
+    id: "i6",
+    name: "Deepa Shrestha",
+    phone: "+977 9846667788",
+    branchId: "b3",
+    branch: "Bhaktapur Branch",
+    assignedStudents: 12,
+    todayLessons: 3,
+    licenseCategory: "A, B",
+    leaveStatus: "available",
+    accountStatus: "active",
+  },
 ];
 
 const BASE_DATE_TIME = new Date("2026-07-17T12:00:00Z").getTime();
 
-const firstNames = ["Anish", "Bibek", "Sushmita", "Pratik", "Sabina", "Rohit", "Nisha", "Ashish", "Puja", "Sagar", "Kritika", "Bishal", "Sarita", "Nabin", "Mamata", "Dipesh", "Anjali", "Prabin", "Rekha", "Suresh"];
-const lastNames = ["Sharma", "Shrestha", "Karki", "Thapa", "Rai", "Gurung", "Tamang", "Magar", "Bhandari", "Poudel", "Adhikari", "Basnet", "KC", "Maharjan"];
+const firstNames = [
+  "Anish",
+  "Bibek",
+  "Sushmita",
+  "Pratik",
+  "Sabina",
+  "Rohit",
+  "Nisha",
+  "Ashish",
+  "Puja",
+  "Sagar",
+  "Kritika",
+  "Bishal",
+  "Sarita",
+  "Nabin",
+  "Mamata",
+  "Dipesh",
+  "Anjali",
+  "Prabin",
+  "Rekha",
+  "Suresh",
+];
+const lastNames = [
+  "Sharma",
+  "Shrestha",
+  "Karki",
+  "Thapa",
+  "Rai",
+  "Gurung",
+  "Tamang",
+  "Magar",
+  "Bhandari",
+  "Poudel",
+  "Adhikari",
+  "Basnet",
+  "KC",
+  "Maharjan",
+];
 const courses = ["Car (B)", "Motorbike (A)", "Heavy Vehicle (C)", "Scooter (A)"];
 
 export const students: Student[] = Array.from({ length: 40 }).map((_, i) => {
@@ -89,7 +221,14 @@ export const auditLogs: AuditLog[] = Array.from({ length: 30 }).map((_, i) => ({
   id: `a${i + 1}`,
   user: [currentUser.name, "Rajesh Karki", "Sita Maharjan"][i % 3],
   role: ["Admin", "Branch Manager", "Receptionist"][i % 3],
-  action: ["Created Student", "Recorded Payment", "Updated Instructor", "Approved Leave", "Deleted Record", "Modified Branch"][i % 6],
+  action: [
+    "Created Student",
+    "Recorded Payment",
+    "Updated Instructor",
+    "Approved Leave",
+    "Deleted Record",
+    "Modified Branch",
+  ][i % 6],
   module: ["Students", "Payments", "Instructors", "Leave", "Students", "Branches"][i % 6],
   record: `#REC-${1000 + i}`,
   branch: branches[i % branches.length].name,
@@ -98,9 +237,33 @@ export const auditLogs: AuditLog[] = Array.from({ length: 30 }).map((_, i) => ({
 }));
 
 export const supportTickets: SupportTicket[] = [
-  { id: "t1", subject: "Cannot print receipt in 4-up layout", category: "Bug", priority: "high", status: "in_progress", createdAt: new Date(BASE_DATE_TIME - 86400000).toISOString(), description: "The 4-up A4 print layout cuts off the footer." },
-  { id: "t2", subject: "How to add a new branch?", category: "Question", priority: "low", status: "resolved", createdAt: new Date(BASE_DATE_TIME - 3 * 86400000).toISOString(), description: "Need help adding a new branch under my current plan." },
-  { id: "t3", subject: "eSewa payment not reflecting", category: "Payment", priority: "high", status: "open", createdAt: new Date(BASE_DATE_TIME - 6 * 3600000).toISOString(), description: "Renewal payment via eSewa completed but not showing." },
+  {
+    id: "t1",
+    subject: "Cannot print receipt in 4-up layout",
+    category: "Bug",
+    priority: "high",
+    status: "in_progress",
+    createdAt: new Date(BASE_DATE_TIME - 86400000).toISOString(),
+    description: "The 4-up A4 print layout cuts off the footer.",
+  },
+  {
+    id: "t2",
+    subject: "How to add a new branch?",
+    category: "Question",
+    priority: "low",
+    status: "resolved",
+    createdAt: new Date(BASE_DATE_TIME - 3 * 86400000).toISOString(),
+    description: "Need help adding a new branch under my current plan.",
+  },
+  {
+    id: "t3",
+    subject: "eSewa payment not reflecting",
+    category: "Payment",
+    priority: "high",
+    status: "open",
+    createdAt: new Date(BASE_DATE_TIME - 6 * 3600000).toISOString(),
+    description: "Renewal payment via eSewa completed but not showing.",
+  },
 ];
 
 // Charts
@@ -160,9 +323,43 @@ export const subscription = {
 };
 
 export const plans = [
-  { name: "Starter", price: 4999, features: ["1 Branch", "Up to 100 students", "5 Instructors", "Basic reports", "Email support"] },
-  { name: "Growth", price: 9999, features: ["4 Branches", "Up to 500 students", "25 Instructors", "Advanced analytics", "Priority support"], popular: true },
-  { name: "Professional", price: 19999, features: ["10 Branches", "Up to 2000 students", "100 Instructors", "Full analytics", "Phone + email support"] },
-  { name: "Enterprise", price: 39999, features: ["Unlimited branches", "Unlimited students", "Unlimited instructors", "Custom integrations", "Dedicated manager"] },
+  {
+    name: "Starter",
+    price: 4999,
+    features: ["1 Branch", "Up to 100 students", "5 Instructors", "Basic reports", "Email support"],
+  },
+  {
+    name: "Growth",
+    price: 9999,
+    features: [
+      "4 Branches",
+      "Up to 500 students",
+      "25 Instructors",
+      "Advanced analytics",
+      "Priority support",
+    ],
+    popular: true,
+  },
+  {
+    name: "Professional",
+    price: 19999,
+    features: [
+      "10 Branches",
+      "Up to 2000 students",
+      "100 Instructors",
+      "Full analytics",
+      "Phone + email support",
+    ],
+  },
+  {
+    name: "Enterprise",
+    price: 39999,
+    features: [
+      "Unlimited branches",
+      "Unlimited students",
+      "Unlimited instructors",
+      "Custom integrations",
+      "Dedicated manager",
+    ],
+  },
 ];
-

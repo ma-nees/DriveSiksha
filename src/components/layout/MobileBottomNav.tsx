@@ -21,7 +21,8 @@ export function MobileBottomNav() {
     <nav className="fixed bottom-0 left-0 right-0 z-30 border-t bg-background/95 backdrop-blur-md lg:hidden pb-[env(safe-area-inset-bottom)] shadow-lg">
       <div className="grid grid-cols-5 items-center h-14">
         {items.map((it) => {
-          const active = pathname === it.to || (it.to !== "/dashboard" && pathname.startsWith(it.to));
+          const active =
+            pathname === it.to || (it.to !== "/dashboard" && pathname.startsWith(it.to));
           const Icon = it.icon;
           return (
             <Link
@@ -29,10 +30,17 @@ export function MobileBottomNav() {
               to={it.to}
               className={cn(
                 "flex flex-col items-center justify-center gap-0.5 py-1 text-[10px] font-medium transition-all",
-                active ? "text-accent-red font-bold" : "text-muted-foreground hover:text-foreground",
+                active
+                  ? "text-accent-red font-bold"
+                  : "text-muted-foreground hover:text-foreground",
               )}
             >
-              <div className={cn("p-1 rounded-xl transition-all", active && "bg-accent-red/10 text-accent-red scale-105")}>
+              <div
+                className={cn(
+                  "p-1 rounded-xl transition-all",
+                  active && "bg-accent-red/10 text-accent-red scale-105",
+                )}
+              >
                 <Icon className="h-4 sm:h-5 w-4 sm:w-5" />
               </div>
               <span className="truncate max-w-[56px]">{it.label}</span>
@@ -46,16 +54,24 @@ export function MobileBottomNav() {
             <button
               className={cn(
                 "flex flex-col items-center justify-center gap-0.5 py-1 text-[10px] font-medium transition-all text-muted-foreground hover:text-foreground",
-                openDrawer && "text-accent-red font-bold"
+                openDrawer && "text-accent-red font-bold",
               )}
             >
-              <div className={cn("p-1 rounded-xl transition-all", openDrawer && "bg-accent-red/10 text-accent-red scale-105")}>
+              <div
+                className={cn(
+                  "p-1 rounded-xl transition-all",
+                  openDrawer && "bg-accent-red/10 text-accent-red scale-105",
+                )}
+              >
                 <Menu className="h-4 sm:h-5 w-4 sm:w-5" />
               </div>
               <span>Menu</span>
             </button>
           </SheetTrigger>
-          <SheetContent side="left" className="w-72 p-0 bg-sidebar text-sidebar-foreground border-sidebar-border">
+          <SheetContent
+            side="left"
+            className="w-72 p-0 bg-sidebar text-sidebar-foreground border-sidebar-border"
+          >
             <SidebarContent onNavigate={() => setOpenDrawer(false)} />
           </SheetContent>
         </Sheet>
@@ -63,5 +79,3 @@ export function MobileBottomNav() {
     </nav>
   );
 }
-
-

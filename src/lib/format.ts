@@ -6,11 +6,17 @@ export function formatNPR(amount: number): string {
 export function formatCompactNepali(amount: number, withSymbol = false): string {
   const prefix = withSymbol ? "NPR " : "";
   if (Math.abs(amount) >= 10000000) {
-    const cr = (amount / 10000000).toFixed(2).replace(/\.00$/, "").replace(/(\.\d)0$/, "$1");
+    const cr = (amount / 10000000)
+      .toFixed(2)
+      .replace(/\.00$/, "")
+      .replace(/(\.\d)0$/, "$1");
     return `${prefix}${cr} Cr`;
   }
   if (Math.abs(amount) >= 100000) {
-    const lakh = (amount / 100000).toFixed(2).replace(/\.00$/, "").replace(/(\.\d)0$/, "$1");
+    const lakh = (amount / 100000)
+      .toFixed(2)
+      .replace(/\.00$/, "")
+      .replace(/(\.\d)0$/, "$1");
     return `${prefix}${lakh} L`;
   }
   if (Math.abs(amount) >= 1000) {
@@ -57,9 +63,40 @@ export function formatBSDate(isoOrDate: string | Date): string {
 export function numberToWords(n: number): string {
   // Simple implementation for NPR receipts
   if (n === 0) return "Zero";
-  const ones = ["", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten",
-    "Eleven", "Twelve", "Thirteen", "Fourteen", "Fifteen", "Sixteen", "Seventeen", "Eighteen", "Nineteen"];
-  const tens = ["", "", "Twenty", "Thirty", "Forty", "Fifty", "Sixty", "Seventy", "Eighty", "Ninety"];
+  const ones = [
+    "",
+    "One",
+    "Two",
+    "Three",
+    "Four",
+    "Five",
+    "Six",
+    "Seven",
+    "Eight",
+    "Nine",
+    "Ten",
+    "Eleven",
+    "Twelve",
+    "Thirteen",
+    "Fourteen",
+    "Fifteen",
+    "Sixteen",
+    "Seventeen",
+    "Eighteen",
+    "Nineteen",
+  ];
+  const tens = [
+    "",
+    "",
+    "Twenty",
+    "Thirty",
+    "Forty",
+    "Fifty",
+    "Sixty",
+    "Seventy",
+    "Eighty",
+    "Ninety",
+  ];
   function twoDigit(num: number): string {
     if (num < 20) return ones[num];
     return tens[Math.floor(num / 10)] + (num % 10 ? " " + ones[num % 10] : "");
@@ -70,9 +107,12 @@ export function numberToWords(n: number): string {
     return (h ? ones[h] + " Hundred" + (r ? " " : "") : "") + (r ? twoDigit(r) : "");
   }
   let result = "";
-  const crore = Math.floor(n / 10000000); n %= 10000000;
-  const lakh = Math.floor(n / 100000); n %= 100000;
-  const thousand = Math.floor(n / 1000); n %= 1000;
+  const crore = Math.floor(n / 10000000);
+  n %= 10000000;
+  const lakh = Math.floor(n / 100000);
+  n %= 100000;
+  const thousand = Math.floor(n / 1000);
+  n %= 1000;
   const rest = n;
   if (crore) result += twoDigit(crore) + " Crore ";
   if (lakh) result += twoDigit(lakh) + " Lakh ";
@@ -80,4 +120,3 @@ export function numberToWords(n: number): string {
   if (rest) result += threeDigit(rest);
   return result.trim() + " Rupees Only";
 }
-

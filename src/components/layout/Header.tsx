@@ -1,7 +1,17 @@
 // ma-nees
 import { useState, useEffect } from "react";
 import { Link } from "@tanstack/react-router";
-import { Bell, Menu, Moon, Plus, Search, Sun, ChevronDown, Building2 } from "lucide-react";
+import {
+  Bell,
+  Menu,
+  Moon,
+  Plus,
+  Search,
+  Sun,
+  ChevronDown,
+  Building2,
+  CheckCircle2,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
@@ -23,6 +33,16 @@ import { ALL_BRANCHES, useSelectedBranch } from "@/hooks/use-selected-branch";
 export function Header() {
   const [open, setOpen] = useState(false);
   const [dark, setDark] = useState(false);
+  const [isVerified, setIsVerified] = useState(false);
+
+  useEffect(() => {
+    setIsVerified(!!localStorage.getItem("drivesiksha_certificate"));
+    const handleStorage = () => {
+      setIsVerified(!!localStorage.getItem("drivesiksha_certificate"));
+    };
+    window.addEventListener("storage", handleStorage);
+    return () => window.removeEventListener("storage", handleStorage);
+  }, []);
   const [branchId, setBranchId] = useSelectedBranch();
   const selectedBranchLabel =
     branchId === ALL_BRANCHES
@@ -170,7 +190,12 @@ export function Header() {
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" className="w-56">
           <DropdownMenuLabel>
-            <div className="text-sm font-semibold">{currentUser.name}</div>
+            <div className="text-sm font-semibold flex items-center gap-1">
+              {currentUser.name}
+              {isVerified && (
+                <CheckCircle2 className="h-3.5 w-3.5 text-emerald-500 fill-emerald-500/10 shrink-0" />
+              )}
+            </div>
             <div className="text-xs text-muted-foreground font-normal">{currentUser.role}</div>
           </DropdownMenuLabel>
           <DropdownMenuSeparator />
@@ -196,4 +221,3 @@ export function Header() {
     </header>
   );
 }
-

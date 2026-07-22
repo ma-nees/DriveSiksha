@@ -7,6 +7,7 @@ import { Logo } from "@/components/Logo";
 import { Printer, FileDown, ArrowLeft, Copy } from "lucide-react";
 import { currentSchool, payments, students } from "@/lib/mock-data";
 import { formatNPR, formatDate, numberToWords } from "@/lib/format";
+import type { Student, Payment } from "@/lib/types";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/_admin/receipts/$id/")({
@@ -24,13 +25,33 @@ function ReceiptPage() {
     <>
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between mb-4 no-print">
         <div>
-          <Button variant="ghost" size="sm" asChild className="-ml-2 mb-1"><Link to="/payments"><ArrowLeft className="h-4 w-4 mr-1" />Back</Link></Button>
+          <Button variant="ghost" size="sm" asChild className="-ml-2 mb-1">
+            <Link to="/payments">
+              <ArrowLeft className="h-4 w-4 mr-1" />
+              Back
+            </Link>
+          </Button>
           <h1 className="text-xl sm:text-2xl font-bold">Receipt {p.receiptNo}</h1>
         </div>
         <div className="flex gap-2">
-          <Button variant="outline" size="sm" onClick={() => window.print()}><FileDown className="h-4 w-4 mr-1.5" />PDF</Button>
-          <Button variant="outline" size="sm" asChild><Link to="/receipts/$id/print" params={{ id: p.receiptNo }}><Copy className="h-4 w-4 mr-1.5" />4-up print</Link></Button>
-          <Button size="sm" onClick={() => window.print()} className="bg-brand hover:bg-brand/90 text-brand-foreground"><Printer className="h-4 w-4 mr-1.5" />Print</Button>
+          <Button variant="outline" size="sm" onClick={() => window.print()}>
+            <FileDown className="h-4 w-4 mr-1.5" />
+            PDF
+          </Button>
+          <Button variant="outline" size="sm" asChild>
+            <Link to="/receipts/$id/print" params={{ id: p.receiptNo }}>
+              <Copy className="h-4 w-4 mr-1.5" />
+              4-up print
+            </Link>
+          </Button>
+          <Button
+            size="sm"
+            onClick={() => window.print()}
+            className="bg-brand hover:bg-brand/90 text-brand-foreground"
+          >
+            <Printer className="h-4 w-4 mr-1.5" />
+            Print
+          </Button>
         </div>
       </div>
 
@@ -41,7 +62,22 @@ function ReceiptPage() {
   );
 }
 
-export function ReceiptTemplate({ school, p, s, remaining }: any) {
+interface ReceiptTemplateProps {
+  school: {
+    name: string;
+    address: string;
+    phone: string;
+    email: string;
+    pan: string;
+    registration: string;
+    website?: string;
+  };
+  p: Payment;
+  s: Student;
+  remaining: number;
+}
+
+export function ReceiptTemplate({ school, p, s, remaining }: ReceiptTemplateProps) {
   return (
     <Card className="overflow-hidden bg-card">
       <CardContent className="p-6 sm:p-8">
@@ -52,12 +88,18 @@ export function ReceiptTemplate({ school, p, s, remaining }: any) {
             <div>
               <div className="text-lg sm:text-xl font-bold text-brand">{school.name}</div>
               <div className="text-xs text-muted-foreground">{school.address}</div>
-              <div className="text-xs text-muted-foreground">{school.phone} · {school.email}</div>
-              <div className="text-xs text-muted-foreground">PAN: {school.pan} · Reg: {school.registration}</div>
+              <div className="text-xs text-muted-foreground">
+                {school.phone} · {school.email}
+              </div>
+              <div className="text-xs text-muted-foreground">
+                PAN: {school.pan} · Reg: {school.registration}
+              </div>
             </div>
           </div>
           <div className="text-right">
-            <div className="text-[11px] uppercase tracking-widest text-muted-foreground">Receipt</div>
+            <div className="text-[11px] uppercase tracking-widest text-muted-foreground">
+              Receipt
+            </div>
             <div className="text-lg font-bold">{p.receiptNo}</div>
             <div className="text-xs text-muted-foreground">Date: {formatDate(p.date)}</div>
           </div>
@@ -68,7 +110,9 @@ export function ReceiptTemplate({ school, p, s, remaining }: any) {
           <div>
             <div className="text-[11px] uppercase text-muted-foreground">Received from</div>
             <div className="font-semibold">{s.name}</div>
-            <div className="text-xs text-muted-foreground">{s.studentId} · {s.phone}</div>
+            <div className="text-xs text-muted-foreground">
+              {s.studentId} · {s.phone}
+            </div>
           </div>
           <div>
             <div className="text-[11px] uppercase text-muted-foreground">Course</div>
@@ -83,7 +127,9 @@ export function ReceiptTemplate({ school, p, s, remaining }: any) {
             <div className="text-sm text-muted-foreground">Amount paid</div>
             <div className="text-2xl sm:text-3xl font-bold text-brand">{formatNPR(p.amount)}</div>
           </div>
-          <div className="text-xs italic text-muted-foreground mt-2">In words: {numberToWords(p.amount)}</div>
+          <div className="text-xs italic text-muted-foreground mt-2">
+            In words: {numberToWords(p.amount)}
+          </div>
         </div>
 
         <div className="grid grid-cols-2 gap-4 text-sm">
@@ -95,15 +141,20 @@ export function ReceiptTemplate({ school, p, s, remaining }: any) {
 
         <div className="mt-8 grid grid-cols-2 gap-4">
           <div className="text-center">
-            <div className="border-t border-dashed pt-2 text-xs text-muted-foreground">Student signature</div>
+            <div className="border-t border-dashed pt-2 text-xs text-muted-foreground">
+              Student signature
+            </div>
           </div>
           <div className="text-center">
-            <div className="border-t border-dashed pt-2 text-xs text-muted-foreground">Authorized signature</div>
+            <div className="border-t border-dashed pt-2 text-xs text-muted-foreground">
+              Authorized signature
+            </div>
           </div>
         </div>
 
         <div className="mt-6 border-t pt-3 text-[10px] text-muted-foreground text-center">
-          This is a computer-generated receipt. Fees once paid are non-refundable unless approved by management.
+          This is a computer-generated receipt. Fees once paid are non-refundable unless approved by
+          management.
         </div>
       </CardContent>
     </Card>
@@ -118,4 +169,3 @@ function Row({ label, value, tone }: { label: string; value: string; tone?: stri
     </div>
   );
 }
-

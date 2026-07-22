@@ -1,4 +1,4 @@
-// ma-nees
+/* ma-nees */
 @import "tailwindcss" source(none);
 @source "../src";
 @import "tw-animate-css";
@@ -252,7 +252,8 @@
   }
 
   /* Prevent page break inside table rows */
-  tr, .break-inside-avoid {
+  tr,
+  .break-inside-avoid {
     page-break-inside: avoid !important;
     break-inside: avoid !important;
   }
@@ -294,7 +295,7 @@
     width: 210mm;
     min-height: 297mm;
   }
-  
+
   .receipt-print-grid {
     grid-template-columns: repeat(2, 1fr);
     height: 281mm;
@@ -311,12 +312,10 @@
     margin: 0 !important;
     border: none !important;
   }
-  
+
   .receipt-print-grid {
     grid-template-columns: repeat(2, 1fr) !important;
     gap: 3mm !important;
     height: 281mm !important;
   }
 }
-
-

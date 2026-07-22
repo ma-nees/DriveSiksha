@@ -12,7 +12,15 @@ const toneStyles: Record<Tone, string> = {
   brand: "bg-brand/10 text-brand border-brand/20",
 };
 
-export function StatusBadge({ tone = "neutral", children, className }: { tone?: Tone; children: React.ReactNode; className?: string }) {
+export function StatusBadge({
+  tone = "neutral",
+  children,
+  className,
+}: {
+  tone?: Tone;
+  children: React.ReactNode;
+  className?: string;
+}) {
   return (
     <span
       className={cn(
@@ -26,4 +34,3 @@ export function StatusBadge({ tone = "neutral", children, className }: { tone?: 
     </span>
   );
 }
-

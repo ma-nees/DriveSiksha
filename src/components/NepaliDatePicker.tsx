@@ -1,6 +1,12 @@
 // ma-nees
 import { useState, useEffect } from "react";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 interface NepaliDatePickerProps {
   value: string;
@@ -62,26 +68,43 @@ export function NepaliDatePicker({ value, onChange }: NepaliDatePickerProps) {
   return (
     <div className="grid grid-cols-3 gap-1.5 w-full">
       <Select value={year} onValueChange={handleYearChange}>
-        <SelectTrigger className="h-10 text-xs px-2"><SelectValue placeholder="Year" /></SelectTrigger>
+        <SelectTrigger className="h-10 text-xs px-2">
+          <SelectValue placeholder="Year" />
+        </SelectTrigger>
         <SelectContent>
-          {years.map(y => <SelectItem key={y} value={y}>{y} BS</SelectItem>)}
+          {years.map((y) => (
+            <SelectItem key={y} value={y}>
+              {y} BS
+            </SelectItem>
+          ))}
         </SelectContent>
       </Select>
 
       <Select value={month} onValueChange={handleMonthChange}>
-        <SelectTrigger className="h-10 text-xs px-2"><SelectValue placeholder="Month" /></SelectTrigger>
+        <SelectTrigger className="h-10 text-xs px-2">
+          <SelectValue placeholder="Month" />
+        </SelectTrigger>
         <SelectContent>
-          {nepaliMonths.map(m => <SelectItem key={m.value} value={m.value}>{m.label}</SelectItem>)}
+          {nepaliMonths.map((m) => (
+            <SelectItem key={m.value} value={m.value}>
+              {m.label}
+            </SelectItem>
+          ))}
         </SelectContent>
       </Select>
 
       <Select value={day} onValueChange={handleDayChange}>
-        <SelectTrigger className="h-10 text-xs px-2"><SelectValue placeholder="Day" /></SelectTrigger>
+        <SelectTrigger className="h-10 text-xs px-2">
+          <SelectValue placeholder="Day" />
+        </SelectTrigger>
         <SelectContent>
-          {days.map(d => <SelectItem key={d} value={d}>{d}</SelectItem>)}
+          {days.map((d) => (
+            <SelectItem key={d} value={d}>
+              {d}
+            </SelectItem>
+          ))}
         </SelectContent>
       </Select>
     </div>
   );
 }
-

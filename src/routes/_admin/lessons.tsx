@@ -5,12 +5,39 @@ import { PageHeader } from "@/components/PageHeader";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { StatusBadge } from "@/components/StatusBadge";
-import { CalendarClock, Car, Clock, User, CheckCircle2, PlayCircle, MoreVertical, Calendar } from "lucide-react";
+import {
+  CalendarClock,
+  Car,
+  Clock,
+  User,
+  CheckCircle2,
+  PlayCircle,
+  MoreVertical,
+  Calendar,
+} from "lucide-react";
 import { students, instructors } from "@/lib/mock-data";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+  DialogFooter,
+} from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 
@@ -34,11 +61,15 @@ const fixedDayLessonCounts = [6, 8, 12, 10, 6, 9, 7];
 
 function LessonsPage() {
   const today = new Date();
-  const dates = useMemo(() => Array.from({ length: 7 }).map((_, i) => {
-    const d = new Date(today);
-    d.setDate(today.getDate() + i);
-    return d;
-  }), []);
+  const dates = useMemo(
+    () =>
+      Array.from({ length: 7 }).map((_, i) => {
+        const d = new Date(today);
+        d.setDate(today.getDate() + i);
+        return d;
+      }),
+    [],
+  );
 
   const [selectedDateIndex, setSelectedDateIndex] = useState(0);
 
@@ -91,9 +122,7 @@ function LessonsPage() {
   };
 
   const updateLessonStatus = (id: string, newStatus: ScheduledLesson["status"]) => {
-    setScheduledLessons((prev) =>
-      prev.map((l) => (l.id === id ? { ...l, status: newStatus } : l))
-    );
+    setScheduledLessons((prev) => prev.map((l) => (l.id === id ? { ...l, status: newStatus } : l)));
     toast.success(`Lesson status updated to ${newStatus}`);
   };
 
@@ -106,7 +135,12 @@ function LessonsPage() {
   const selectedDateObj = dates[selectedDateIndex];
   const isSelectedToday = selectedDateIndex === 0;
 
-  const currentLessonsList = isSelectedToday ? scheduledLessons : scheduledLessons.slice(0, Math.min(scheduledLessons.length, fixedDayLessonCounts[selectedDateIndex] || 5));
+  const currentLessonsList = isSelectedToday
+    ? scheduledLessons
+    : scheduledLessons.slice(
+        0,
+        Math.min(scheduledLessons.length, fixedDayLessonCounts[selectedDateIndex] || 5),
+      );
 
   const stats = useMemo(() => {
     const completed = currentLessonsList.filter((l) => l.status === "completed").length;
@@ -123,8 +157,12 @@ function LessonsPage() {
         actions={
           <Dialog open={isAddOpen} onOpenChange={setIsAddOpen}>
             <DialogTrigger asChild>
-              <Button size="sm" className="bg-accent-red hover:bg-accent-red/90 text-accent-red-foreground">
-                <CalendarClock className="h-4 w-4 mr-1.5" />Schedule lesson
+              <Button
+                size="sm"
+                className="bg-accent-red hover:bg-accent-red/90 text-accent-red-foreground"
+              >
+                <CalendarClock className="h-4 w-4 mr-1.5" />
+                Schedule lesson
               </Button>
             </DialogTrigger>
             <DialogContent className="sm:max-w-[425px]">
@@ -133,9 +171,13 @@ function LessonsPage() {
               </DialogHeader>
               <div className="grid gap-4 py-4">
                 <div className="grid gap-2">
-                  <Label htmlFor="student" className="text-xs font-semibold">Student *</Label>
+                  <Label htmlFor="student" className="text-xs font-semibold">
+                    Student *
+                  </Label>
                   <Select value={studentId} onValueChange={setStudentId}>
-                    <SelectTrigger className="h-10"><SelectValue placeholder="Select student" /></SelectTrigger>
+                    <SelectTrigger className="h-10">
+                      <SelectValue placeholder="Select student" />
+                    </SelectTrigger>
                     <SelectContent>
                       {students.map((s) => (
                         <SelectItem key={s.id} value={s.id}>
@@ -146,9 +188,13 @@ function LessonsPage() {
                   </Select>
                 </div>
                 <div className="grid gap-2">
-                  <Label htmlFor="instructor" className="text-xs font-semibold">Instructor *</Label>
+                  <Label htmlFor="instructor" className="text-xs font-semibold">
+                    Instructor *
+                  </Label>
                   <Select value={instructorId} onValueChange={setInstructorId}>
-                    <SelectTrigger className="h-10"><SelectValue placeholder="Select instructor" /></SelectTrigger>
+                    <SelectTrigger className="h-10">
+                      <SelectValue placeholder="Select instructor" />
+                    </SelectTrigger>
                     <SelectContent>
                       {instructors.map((i) => (
                         <SelectItem key={i.id} value={i.id}>
@@ -159,9 +205,13 @@ function LessonsPage() {
                   </Select>
                 </div>
                 <div className="grid gap-2">
-                  <Label htmlFor="time" className="text-xs font-semibold">Time Slot *</Label>
+                  <Label htmlFor="time" className="text-xs font-semibold">
+                    Time Slot *
+                  </Label>
                   <Select value={timeSlot} onValueChange={setTimeSlot}>
-                    <SelectTrigger className="h-10"><SelectValue placeholder="Select time slot" /></SelectTrigger>
+                    <SelectTrigger className="h-10">
+                      <SelectValue placeholder="Select time slot" />
+                    </SelectTrigger>
                     <SelectContent>
                       {times.map((t) => (
                         <SelectItem key={t} value={t}>
@@ -173,8 +223,15 @@ function LessonsPage() {
                 </div>
               </div>
               <DialogFooter>
-                <Button variant="outline" onClick={() => setIsAddOpen(false)} className="h-10">Cancel</Button>
-                <Button onClick={handleScheduleLesson} className="h-10 bg-accent-red hover:bg-accent-red/90 text-accent-red-foreground">Schedule Lesson</Button>
+                <Button variant="outline" onClick={() => setIsAddOpen(false)} className="h-10">
+                  Cancel
+                </Button>
+                <Button
+                  onClick={handleScheduleLesson}
+                  className="h-10 bg-accent-red hover:bg-accent-red/90 text-accent-red-foreground"
+                >
+                  Schedule Lesson
+                </Button>
               </DialogFooter>
             </DialogContent>
           </Dialog>
@@ -206,15 +263,25 @@ function LessonsPage() {
                     "flex flex-col justify-between p-3.5 rounded-xl border text-left transition-all duration-200 cursor-pointer relative overflow-hidden group",
                     isSelected
                       ? "bg-brand text-brand-foreground border-brand shadow-md ring-2 ring-brand/30 scale-[1.02]"
-                      : "bg-card hover:bg-accent/40 hover:border-brand/40 text-card-foreground border-border"
+                      : "bg-card hover:bg-accent/40 hover:border-brand/40 text-card-foreground border-border",
                   )}
                 >
                   <div className="flex justify-between items-center w-full">
-                    <span className={cn("text-xs font-semibold uppercase tracking-wider", isSelected ? "text-brand-foreground/80" : "text-muted-foreground")}>
+                    <span
+                      className={cn(
+                        "text-xs font-semibold uppercase tracking-wider",
+                        isSelected ? "text-brand-foreground/80" : "text-muted-foreground",
+                      )}
+                    >
                       {d.toLocaleDateString("en-GB", { weekday: "short" })}
                     </span>
                     {isToday && (
-                      <span className={cn("text-[10px] font-bold px-1.5 py-0.5 rounded-full uppercase", isSelected ? "bg-white/20 text-white" : "bg-brand/10 text-brand")}>
+                      <span
+                        className={cn(
+                          "text-[10px] font-bold px-1.5 py-0.5 rounded-full uppercase",
+                          isSelected ? "bg-white/20 text-white" : "bg-brand/10 text-brand",
+                        )}
+                      >
                         Today
                       </span>
                     )}
@@ -222,16 +289,23 @@ function LessonsPage() {
 
                   <div className="my-1.5 flex items-baseline gap-1">
                     <span className="text-2xl font-bold tracking-tight">{d.getDate()}</span>
-                    <span className={cn("text-xs font-medium", isSelected ? "text-brand-foreground/80" : "text-muted-foreground")}>
+                    <span
+                      className={cn(
+                        "text-xs font-medium",
+                        isSelected ? "text-brand-foreground/80" : "text-muted-foreground",
+                      )}
+                    >
                       {d.toLocaleDateString("en-GB", { month: "short" })}
                     </span>
                   </div>
 
                   <div className="flex items-center gap-1 mt-1 text-xs">
-                    <span className={cn(
-                      "px-2 py-0.5 rounded-full font-medium text-[11px]",
-                      isSelected ? "bg-white/20 text-white" : "bg-muted text-muted-foreground"
-                    )}>
+                    <span
+                      className={cn(
+                        "px-2 py-0.5 rounded-full font-medium text-[11px]",
+                        isSelected ? "bg-white/20 text-white" : "bg-muted text-muted-foreground",
+                      )}
+                    >
                       {count} lessons
                     </span>
                   </div>
@@ -247,7 +321,9 @@ function LessonsPage() {
         <CardHeader className="pb-3 flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b">
           <div>
             <CardTitle className="text-base">
-              {isSelectedToday ? "Today's Schedule" : `Schedule for ${selectedDateObj.toLocaleDateString("en-GB", { weekday: "long", day: "numeric", month: "short" })}`}
+              {isSelectedToday
+                ? "Today's Schedule"
+                : `Schedule for ${selectedDateObj.toLocaleDateString("en-GB", { weekday: "long", day: "numeric", month: "short" })}`}
             </CardTitle>
             <div className="text-xs text-muted-foreground mt-0.5">
               Showing {currentLessonsList.length} driving lessons
@@ -255,9 +331,15 @@ function LessonsPage() {
           </div>
 
           <div className="flex items-center gap-2 flex-wrap">
-            <span className="text-xs px-2.5 py-1 rounded-full bg-success/10 text-success font-medium">Completed: {stats.completed}</span>
-            <span className="text-xs px-2.5 py-1 rounded-full bg-sky/10 text-sky font-medium">Ongoing: {stats.ongoing}</span>
-            <span className="text-xs px-2.5 py-1 rounded-full bg-muted text-muted-foreground font-medium">Scheduled: {stats.scheduled}</span>
+            <span className="text-xs px-2.5 py-1 rounded-full bg-success/10 text-success font-medium">
+              Completed: {stats.completed}
+            </span>
+            <span className="text-xs px-2.5 py-1 rounded-full bg-sky/10 text-sky font-medium">
+              Ongoing: {stats.ongoing}
+            </span>
+            <span className="text-xs px-2.5 py-1 rounded-full bg-muted text-muted-foreground font-medium">
+              Scheduled: {stats.scheduled}
+            </span>
           </div>
         </CardHeader>
 
@@ -282,12 +364,19 @@ function LessonsPage() {
                 {/* Student & Instructor details */}
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center gap-2 truncate">
-                    <span className="font-semibold text-sm text-foreground truncate">{l.studentName}</span>
-                    <span className="text-[11px] font-medium bg-muted px-2 py-0.5 rounded text-muted-foreground shrink-0">{l.course}</span>
+                    <span className="font-semibold text-sm text-foreground truncate">
+                      {l.studentName}
+                    </span>
+                    <span className="text-[11px] font-medium bg-muted px-2 py-0.5 rounded text-muted-foreground shrink-0">
+                      {l.course}
+                    </span>
                   </div>
                   <div className="flex items-center gap-2 text-xs text-muted-foreground mt-0.5 truncate">
                     <User className="h-3.5 w-3.5 shrink-0" />
-                    <span className="truncate">Instructor: <strong className="font-medium text-foreground">{l.instructorName}</strong></span>
+                    <span className="truncate">
+                      Instructor:{" "}
+                      <strong className="font-medium text-foreground">{l.instructorName}</strong>
+                    </span>
                   </div>
                 </div>
               </div>
@@ -298,24 +387,45 @@ function LessonsPage() {
 
                 <div className="flex items-center gap-1">
                   {l.status === "scheduled" && (
-                    <Button size="sm" variant="outline" className="h-8 text-xs gap-1" onClick={() => updateLessonStatus(l.id, "ongoing")}>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      className="h-8 text-xs gap-1"
+                      onClick={() => updateLessonStatus(l.id, "ongoing")}
+                    >
                       <PlayCircle className="h-3.5 w-3.5 text-sky" /> Start
                     </Button>
                   )}
                   {l.status === "ongoing" && (
-                    <Button size="sm" variant="outline" className="h-8 text-xs gap-1 text-success border-success/30 hover:bg-success/10" onClick={() => updateLessonStatus(l.id, "completed")}>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      className="h-8 text-xs gap-1 text-success border-success/30 hover:bg-success/10"
+                      onClick={() => updateLessonStatus(l.id, "completed")}
+                    >
                       <CheckCircle2 className="h-3.5 w-3.5" /> Complete
                     </Button>
                   )}
 
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                      <Button variant="ghost" size="icon" className="h-8 w-8"><MoreVertical className="h-4 w-4" /></Button>
+                      <Button variant="ghost" size="icon" className="h-8 w-8">
+                        <MoreVertical className="h-4 w-4" />
+                      </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
-                      <DropdownMenuItem onClick={() => updateLessonStatus(l.id, "completed")}><CheckCircle2 className="h-4 w-4 mr-2 text-success" />Mark completed</DropdownMenuItem>
-                      <DropdownMenuItem onClick={() => updateLessonStatus(l.id, "ongoing")}><PlayCircle className="h-4 w-4 mr-2 text-sky" />Mark ongoing</DropdownMenuItem>
-                      <DropdownMenuItem onClick={() => updateLessonStatus(l.id, "scheduled")}><Clock className="h-4 w-4 mr-2" />Mark scheduled</DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => updateLessonStatus(l.id, "completed")}>
+                        <CheckCircle2 className="h-4 w-4 mr-2 text-success" />
+                        Mark completed
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => updateLessonStatus(l.id, "ongoing")}>
+                        <PlayCircle className="h-4 w-4 mr-2 text-sky" />
+                        Mark ongoing
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => updateLessonStatus(l.id, "scheduled")}>
+                        <Clock className="h-4 w-4 mr-2" />
+                        Mark scheduled
+                      </DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>
                 </div>
@@ -324,12 +434,12 @@ function LessonsPage() {
           ))}
 
           {currentLessonsList.length === 0 && (
-            <div className="text-center p-8 text-sm text-muted-foreground">No lessons scheduled for this date.</div>
+            <div className="text-center p-8 text-sm text-muted-foreground">
+              No lessons scheduled for this date.
+            </div>
           )}
         </CardContent>
       </Card>
     </>
   );
 }
-
-

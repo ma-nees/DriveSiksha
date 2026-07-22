@@ -15,7 +15,10 @@ export const Route = createFileRoute("/login")({
   head: () => ({
     meta: [
       { title: "Sign in — DriveSiksha" },
-      { name: "description", content: "Sign in to your DriveSiksha driving school admin dashboard." },
+      {
+        name: "description",
+        content: "Sign in to your DriveSiksha driving school admin dashboard.",
+      },
     ],
   }),
 });
@@ -44,18 +47,28 @@ function LoginPage() {
         </div>
         <div className="relative space-y-4">
           <h2 className="text-3xl xl:text-4xl font-bold tracking-tight leading-tight">
-            The driving school<br />operating system for Nepal.
+            The driving school
+            <br />
+            operating system for Nepal.
           </h2>
           <p className="text-brand-foreground/70 max-w-md">
-            Manage students, instructors, payments, receipts, branches and subscription — all from one polished dashboard.
+            Manage students, instructors, payments, receipts, branches and subscription — all from
+            one polished dashboard.
           </p>
           <div className="flex flex-wrap gap-2 pt-4">
             {["Multi-branch", "eSewa payments", "4-up A4 receipts", "Audit logs"].map((t) => (
-              <span key={t} className="rounded-full border border-brand-foreground/20 px-3 py-1 text-xs font-medium">{t}</span>
+              <span
+                key={t}
+                className="rounded-full border border-brand-foreground/20 px-3 py-1 text-xs font-medium"
+              >
+                {t}
+              </span>
             ))}
           </div>
         </div>
-        <div className="relative text-xs text-brand-foreground/60">© {new Date().getFullYear()} DriveSiksha</div>
+        <div className="relative text-xs text-brand-foreground/60">
+          © {new Date().getFullYear()} DriveSiksha
+        </div>
       </div>
 
       {/* Form panel */}
@@ -64,7 +77,9 @@ function LoginPage() {
           <div className="mb-8 flex items-center gap-3 lg:hidden">
             <Logo size={40} />
             <div>
-              <div className="font-bold text-lg">Drive<span className="text-accent-red">Siksha</span></div>
+              <div className="font-bold text-lg">
+                Drive<span className="text-accent-red">Siksha</span>
+              </div>
               <div className="text-xs text-muted-foreground">Admin sign in</div>
             </div>
           </div>
@@ -78,15 +93,30 @@ function LoginPage() {
             <form onSubmit={onSubmit} className="space-y-4">
               <div className="space-y-1.5">
                 <Label htmlFor="email">Email or phone</Label>
-                <Input id="email" type="text" defaultValue="admin@drivesiksha.com.np" className="h-11" />
+                <Input
+                  id="email"
+                  type="text"
+                  defaultValue="admin@drivesiksha.com.np"
+                  className="h-11"
+                />
               </div>
               <div className="space-y-1.5">
                 <div className="flex items-center justify-between">
                   <Label htmlFor="password">Password</Label>
-                  <Link to="/forgot-password" className="text-xs font-medium text-brand hover:underline">Forgot password?</Link>
+                  <Link
+                    to="/forgot-password"
+                    className="text-xs font-medium text-brand hover:underline"
+                  >
+                    Forgot password?
+                  </Link>
                 </div>
                 <div className="relative">
-                  <Input id="password" type={show ? "text" : "password"} defaultValue="demopass" className="h-11 pr-10" />
+                  <Input
+                    id="password"
+                    type={show ? "text" : "password"}
+                    defaultValue="demopass"
+                    className="h-11 pr-10"
+                  />
                   <button
                     type="button"
                     onClick={() => setShow((s) => !s)}
@@ -100,12 +130,21 @@ function LoginPage() {
               <label className="flex items-center gap-2 text-sm cursor-pointer select-none">
                 <Checkbox defaultChecked /> <span>Remember me for 30 days</span>
               </label>
-              <Button type="submit" className="w-full h-11 bg-accent-red hover:bg-accent-red/90 text-accent-red-foreground" disabled={loading}>
+              <Button
+                type="submit"
+                className="w-full h-11 bg-accent-red hover:bg-accent-red/90 text-accent-red-foreground"
+                disabled={loading}
+              >
                 {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                 Sign in
               </Button>
-              <div className="text-xs text-center text-muted-foreground pt-2">
-                Have an invitation? <Link to="/accept-invitation" className="text-brand font-medium hover:underline">Accept invite</Link>
+              <div className="text-xs text-center text-muted-foreground pt-2 space-y-1">
+                <div>
+                  Don't have an account?{" "}
+                  <Link to="/register" className="text-brand font-medium hover:underline">
+                    Register driving school
+                  </Link>
+                </div>
               </div>
             </form>
           </Card>
@@ -114,4 +153,3 @@ function LoginPage() {
     </div>
   );
 }
-

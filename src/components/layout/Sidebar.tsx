@@ -1,5 +1,6 @@
 // ma-nees
 import { Link, useRouterState } from "@tanstack/react-router";
+import { useState, useEffect } from "react";
 import {
   LayoutDashboard,
   Users,
@@ -15,6 +16,7 @@ import {
   LifeBuoy,
   LogOut,
   ChevronRight,
+  CheckCircle2,
 } from "lucide-react";
 import { LogoWithName } from "@/components/Logo";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
@@ -59,6 +61,16 @@ export const navGroups = [
 
 export function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const [isVerified, setIsVerified] = useState(false);
+
+  useEffect(() => {
+    setIsVerified(!!localStorage.getItem("drivesiksha_certificate"));
+    const handleStorage = () => {
+      setIsVerified(!!localStorage.getItem("drivesiksha_certificate"));
+    };
+    window.addEventListener("storage", handleStorage);
+    return () => window.removeEventListener("storage", handleStorage);
+  }, []);
 
   return (
     <div className="flex h-full flex-col bg-sidebar text-sidebar-foreground select-none">
@@ -126,8 +138,11 @@ export function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
             </AvatarFallback>
           </Avatar>
           <div className="min-w-0 flex-1">
-            <div className="text-xs font-bold truncate text-sidebar-foreground">
+            <div className="text-xs font-bold truncate text-sidebar-foreground flex items-center gap-1">
               {currentUser.name}
+              {isVerified && (
+                <CheckCircle2 className="h-3 w-3 text-emerald-500 fill-emerald-500/10 shrink-0" />
+              )}
             </div>
             <div className="text-[10px] text-sidebar-foreground/60 truncate">
               {currentUser.role}
@@ -147,4 +162,3 @@ export function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
     </div>
   );
 }
-

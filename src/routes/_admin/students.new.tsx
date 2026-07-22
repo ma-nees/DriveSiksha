@@ -7,7 +7,13 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Check, ChevronLeft, ChevronRight, Save } from "lucide-react";
 import { branches, instructors, students } from "@/lib/mock-data";
 import { toast } from "sonner";
@@ -86,13 +92,26 @@ function AddStudent() {
           <ol className="flex items-center gap-2 sm:gap-4 overflow-x-auto no-scrollbar">
             {steps.map((s, i) => (
               <li key={s} className="flex items-center gap-2 shrink-0">
-                <div className={cn(
-                  "h-8 w-8 rounded-full grid place-items-center text-sm font-semibold shrink-0",
-                  i < step ? "bg-success text-success-foreground" : i === step ? "bg-brand text-brand-foreground" : "bg-muted text-muted-foreground",
-                )}>
+                <div
+                  className={cn(
+                    "h-8 w-8 rounded-full grid place-items-center text-sm font-semibold shrink-0",
+                    i < step
+                      ? "bg-success text-success-foreground"
+                      : i === step
+                        ? "bg-brand text-brand-foreground"
+                        : "bg-muted text-muted-foreground",
+                  )}
+                >
                   {i < step ? <Check className="h-4 w-4" /> : i + 1}
                 </div>
-                <span className={cn("text-sm font-medium whitespace-nowrap", i === step ? "" : "text-muted-foreground")}>{s}</span>
+                <span
+                  className={cn(
+                    "text-sm font-medium whitespace-nowrap",
+                    i === step ? "" : "text-muted-foreground",
+                  )}
+                >
+                  {s}
+                </span>
                 {i < steps.length - 1 && <div className="hidden sm:block h-px w-8 bg-border" />}
               </li>
             ))}
@@ -105,14 +124,21 @@ function AddStudent() {
           {step === 0 && (
             <div className="grid gap-4 sm:grid-cols-2">
               <Field label="Full name" required>
-                <Input value={fullName} onChange={(e) => setFullName(e.target.value)} className="h-11" placeholder="e.g. Anish Sharma" />
+                <Input
+                  value={fullName}
+                  onChange={(e) => setFullName(e.target.value)}
+                  className="h-11"
+                  placeholder="e.g. Anish Sharma"
+                />
               </Field>
               <Field label="Date of birth" required>
                 <NepaliDatePicker value={dob} onChange={setDob} />
               </Field>
               <Field label="Gender" required>
                 <Select value={gender} onValueChange={setGender}>
-                  <SelectTrigger className="h-11"><SelectValue placeholder="Select" /></SelectTrigger>
+                  <SelectTrigger className="h-11">
+                    <SelectValue placeholder="Select" />
+                  </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="m">Male</SelectItem>
                     <SelectItem value="f">Female</SelectItem>
@@ -130,10 +156,20 @@ function AddStudent() {
                 />
               </Field>
               <Field label="Email">
-                <Input type="email" value={email} onChange={(e) => setEmail(e.target.value)} className="h-11" />
+                <Input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="h-11"
+                />
               </Field>
               <Field label="Address" full>
-                <Textarea value={address} onChange={(e) => setAddress(e.target.value)} rows={2} placeholder="Street, City, Province" />
+                <Textarea
+                  value={address}
+                  onChange={(e) => setAddress(e.target.value)}
+                  rows={2}
+                  placeholder="Street, City, Province"
+                />
               </Field>
               <Field label="Profile photo" full>
                 <Input type="file" accept="image/*" className="h-11 cursor-pointer" />
@@ -143,25 +179,44 @@ function AddStudent() {
           {step === 1 && (
             <div className="grid gap-4 sm:grid-cols-2">
               <Field label="Citizenship number" required>
-                <Input value={citizenshipNo} onChange={(e) => setCitizenshipNo(e.target.value)} className="h-11" />
+                <Input
+                  value={citizenshipNo}
+                  onChange={(e) => setCitizenshipNo(e.target.value)}
+                  className="h-11"
+                />
               </Field>
               <Field label="Citizenship document">
                 <Input type="file" className="h-11 cursor-pointer" />
               </Field>
               <Field label="Blood group">
                 <Select value={bloodGroup} onValueChange={setBloodGroup}>
-                  <SelectTrigger className="h-11"><SelectValue placeholder="Select" /></SelectTrigger>
+                  <SelectTrigger className="h-11">
+                    <SelectValue placeholder="Select" />
+                  </SelectTrigger>
                   <SelectContent>
-                    {["A+", "A-", "B+", "B-", "O+", "O-", "AB+", "AB-"].map(b => <SelectItem key={b} value={b}>{b}</SelectItem>)}
+                    {["A+", "A-", "B+", "B-", "O+", "O-", "AB+", "AB-"].map((b) => (
+                      <SelectItem key={b} value={b}>
+                        {b}
+                      </SelectItem>
+                    ))}
                   </SelectContent>
                 </Select>
               </Field>
               <div className="hidden sm:block" />
               <Field label="Emergency contact name" required>
-                <Input value={emergencyName} onChange={(e) => setEmergencyName(e.target.value)} className="h-11" />
+                <Input
+                  value={emergencyName}
+                  onChange={(e) => setEmergencyName(e.target.value)}
+                  className="h-11"
+                />
               </Field>
               <Field label="Relationship">
-                <Input value={emergencyRelation} onChange={(e) => setEmergencyRelation(e.target.value)} className="h-11" placeholder="Father, Spouse..." />
+                <Input
+                  value={emergencyRelation}
+                  onChange={(e) => setEmergencyRelation(e.target.value)}
+                  className="h-11"
+                  placeholder="Father, Spouse..."
+                />
               </Field>
               <Field label="Emergency contact phone" required>
                 <Input
@@ -172,7 +227,11 @@ function AddStudent() {
                 />
               </Field>
               <Field label="Emergency address" full>
-                <Textarea value={emergencyAddress} onChange={(e) => setEmergencyAddress(e.target.value)} rows={2} />
+                <Textarea
+                  value={emergencyAddress}
+                  onChange={(e) => setEmergencyAddress(e.target.value)}
+                  rows={2}
+                />
               </Field>
             </div>
           )}
@@ -180,15 +239,23 @@ function AddStudent() {
             <div className="grid gap-4 sm:grid-cols-2">
               <Field label="Branch" required>
                 <Select value={branchId} onValueChange={setBranchId}>
-                  <SelectTrigger className="h-11"><SelectValue placeholder="Select branch" /></SelectTrigger>
+                  <SelectTrigger className="h-11">
+                    <SelectValue placeholder="Select branch" />
+                  </SelectTrigger>
                   <SelectContent>
-                    {branches.map(b => <SelectItem key={b.id} value={b.id}>{b.name}</SelectItem>)}
+                    {branches.map((b) => (
+                      <SelectItem key={b.id} value={b.id}>
+                        {b.name}
+                      </SelectItem>
+                    ))}
                   </SelectContent>
                 </Select>
               </Field>
               <Field label="Course" required>
                 <Select value={course} onValueChange={setCourse}>
-                  <SelectTrigger className="h-11"><SelectValue placeholder="Select course" /></SelectTrigger>
+                  <SelectTrigger className="h-11">
+                    <SelectValue placeholder="Select course" />
+                  </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="Car (B)">Car (B)</SelectItem>
                     <SelectItem value="Motorbike (A)">Motorbike (A)</SelectItem>
@@ -199,9 +266,15 @@ function AddStudent() {
               </Field>
               <Field label="Instructor" required>
                 <Select value={instructorId} onValueChange={setInstructorId}>
-                  <SelectTrigger className="h-11"><SelectValue placeholder="Assign instructor" /></SelectTrigger>
+                  <SelectTrigger className="h-11">
+                    <SelectValue placeholder="Assign instructor" />
+                  </SelectTrigger>
                   <SelectContent>
-                    {instructors.map(i => <SelectItem key={i.id} value={i.id}>{i.name}</SelectItem>)}
+                    {instructors.map((i) => (
+                      <SelectItem key={i.id} value={i.id}>
+                        {i.name}
+                      </SelectItem>
+                    ))}
                   </SelectContent>
                 </Select>
               </Field>
@@ -239,13 +312,29 @@ function AddStudent() {
           {step === 3 && (
             <div className="space-y-3">
               <h3 className="font-semibold">Review your entry</h3>
-              <p className="text-sm text-muted-foreground">Confirm the details below before submitting.</p>
+              <p className="text-sm text-muted-foreground">
+                Confirm the details below before submitting.
+              </p>
               <div className="rounded-lg border p-4 bg-muted/40 text-sm space-y-1.5">
-                <div><span className="text-muted-foreground">Name:</span> <span className="font-medium">{fullName || "Not specified"}</span></div>
-                <div><span className="text-muted-foreground">Phone:</span> {phone || "Not specified"}</div>
-                <div><span className="text-muted-foreground">Branch:</span> {branches.find(b => b.id === branchId)?.name || "Not specified"}</div>
-                <div><span className="text-muted-foreground">Course:</span> {course} · {totalLessons} lessons</div>
-                <div><span className="text-muted-foreground">Fee:</span> <span className="font-semibold">NPR {courseFee.toLocaleString()}</span></div>
+                <div>
+                  <span className="text-muted-foreground">Name:</span>{" "}
+                  <span className="font-medium">{fullName || "Not specified"}</span>
+                </div>
+                <div>
+                  <span className="text-muted-foreground">Phone:</span> {phone || "Not specified"}
+                </div>
+                <div>
+                  <span className="text-muted-foreground">Branch:</span>{" "}
+                  {branches.find((b) => b.id === branchId)?.name || "Not specified"}
+                </div>
+                <div>
+                  <span className="text-muted-foreground">Course:</span> {course} · {totalLessons}{" "}
+                  lessons
+                </div>
+                <div>
+                  <span className="text-muted-foreground">Fee:</span>{" "}
+                  <span className="font-semibold">NPR {courseFee.toLocaleString()}</span>
+                </div>
               </div>
             </div>
           )}
@@ -254,15 +343,37 @@ function AddStudent() {
 
       <div className="sticky bottom-16 lg:bottom-0 mt-4 -mx-3 sm:mx-0 bg-background/90 backdrop-blur-md border-t lg:border-t-0 lg:bg-transparent lg:backdrop-blur-none p-3 sm:p-0">
         <div className="flex flex-col-reverse sm:flex-row gap-2 sm:justify-between">
-          <Button variant="outline" onClick={() => setStep((s) => Math.max(0, s - 1))} disabled={step === 0} className="h-11 sm:h-10">
+          <Button
+            variant="outline"
+            onClick={() => setStep((s) => Math.max(0, s - 1))}
+            disabled={step === 0}
+            className="h-11 sm:h-10"
+          >
             <ChevronLeft className="h-4 w-4 mr-1" /> Previous
           </Button>
           <div className="flex gap-2">
-            <Button variant="ghost" className="h-11 sm:h-10" onClick={() => toast.success("Draft saved")}><Save className="h-4 w-4 mr-1.5" />Save draft</Button>
+            <Button
+              variant="ghost"
+              className="h-11 sm:h-10"
+              onClick={() => toast.success("Draft saved")}
+            >
+              <Save className="h-4 w-4 mr-1.5" />
+              Save draft
+            </Button>
             {step < steps.length - 1 ? (
-              <Button className="h-11 sm:h-10 flex-1 sm:flex-none bg-brand hover:bg-brand/90 text-brand-foreground" onClick={() => setStep((s) => s + 1)}>Next <ChevronRight className="h-4 w-4 ml-1" /></Button>
+              <Button
+                className="h-11 sm:h-10 flex-1 sm:flex-none bg-brand hover:bg-brand/90 text-brand-foreground"
+                onClick={() => setStep((s) => s + 1)}
+              >
+                Next <ChevronRight className="h-4 w-4 ml-1" />
+              </Button>
             ) : (
-              <Button className="h-11 sm:h-10 flex-1 sm:flex-none bg-accent-red hover:bg-accent-red/90 text-accent-red-foreground" onClick={handleSubmit}>Submit</Button>
+              <Button
+                className="h-11 sm:h-10 flex-1 sm:flex-none bg-accent-red hover:bg-accent-red/90 text-accent-red-foreground"
+                onClick={handleSubmit}
+              >
+                Submit
+              </Button>
             )}
           </div>
         </div>
@@ -271,12 +382,24 @@ function AddStudent() {
   );
 }
 
-function Field({ label, required, children, full }: { label: string; required?: boolean; children: React.ReactNode; full?: boolean }) {
+function Field({
+  label,
+  required,
+  children,
+  full,
+}: {
+  label: string;
+  required?: boolean;
+  children: React.ReactNode;
+  full?: boolean;
+}) {
   return (
     <div className={cn("space-y-1.5", full && "sm:col-span-2")}>
-      <Label className="text-xs font-medium">{label}{required && <span className="text-accent-red ml-0.5">*</span>}</Label>
+      <Label className="text-xs font-medium">
+        {label}
+        {required && <span className="text-accent-red ml-0.5">*</span>}
+      </Label>
       {children}
     </div>
   );
 }
-

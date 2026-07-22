@@ -29,5 +29,3 @@ export function LogoWithName({ size = 32 }: { size?: number }) {
     </div>
   );
 }
-
-

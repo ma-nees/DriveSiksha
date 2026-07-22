@@ -79,10 +79,17 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
       { title: "DriveSiksha — Driving School Admin Dashboard" },
-      { name: "description", content: "DriveSiksha is the driving school operating system for Nepal — manage students, instructors, payments, receipts, branches and subscriptions from one polished dashboard." },
+      {
+        name: "description",
+        content:
+          "DriveSiksha is the driving school operating system for Nepal — manage students, instructors, payments, receipts, branches and subscriptions from one polished dashboard.",
+      },
       { name: "author", content: "DriveSiksha" },
       { property: "og:title", content: "DriveSiksha — Driving School Admin Dashboard" },
-      { property: "og:description", content: "The all-in-one platform for driving schools in Nepal." },
+      {
+        property: "og:description",
+        content: "The all-in-one platform for driving schools in Nepal.",
+      },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
@@ -91,7 +98,10 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { rel: "icon", href: "/favicon.png", type: "image/png" },
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
-      { rel: "stylesheet", href: "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" },
+      {
+        rel: "stylesheet",
+        href: "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap",
+      },
     ],
   }),
   shellComponent: RootShell,
@@ -124,4 +134,3 @@ function RootComponent() {
     </QueryClientProvider>
   );
 }
-

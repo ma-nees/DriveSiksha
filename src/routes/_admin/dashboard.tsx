@@ -411,10 +411,7 @@ function Dashboard() {
               <Label className="text-xs font-semibold text-foreground uppercase tracking-wider block">
                 3. Export Format
               </Label>
-              <Select
-                value={fileFormat}
-                onValueChange={(v) => setFileFormat(v as "csv" | "print")}
-              >
+              <Select value={fileFormat} onValueChange={(v) => setFileFormat(v as "csv" | "print")}>
                 <SelectTrigger className="h-10 text-xs">
                   <SelectValue />
                 </SelectTrigger>
@@ -1023,4 +1020,3 @@ function Dashboard() {
     </>
   );
 }
-

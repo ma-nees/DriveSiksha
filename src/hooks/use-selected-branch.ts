@@ -39,4 +39,3 @@ export function useSelectedBranch() {
 
   return [branchId, setBranchId] as const;
 }
-
