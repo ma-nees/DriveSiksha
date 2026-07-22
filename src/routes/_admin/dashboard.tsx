@@ -62,6 +62,7 @@ import {
 } from "@/lib/mock-data";
 import { formatNPR, formatDate, formatBSDate, formatCompactNepali } from "@/lib/format";
 import { ALL_BRANCHES, useSelectedBranch } from "@/hooks/use-selected-branch";
+import { useAuth } from "../../context/AuthContext";
 
 export const Route = createFileRoute("/_admin/dashboard")({
   component: Dashboard,
@@ -85,6 +86,10 @@ const chartConfig = {
 };
 
 function Dashboard() {
+  const { user, school } = useAuth();
+  const activeUser = user ? { name: user.full_name } : { name: "Suman" };
+  const currentPlan = school?.subscription_plan || subscription.plan;
+
   const [exportOpen, setExportOpen] = useState(false);
   const [rangeMode, setRangeMode] = useState<"range" | "all">("range");
   const [fromDateBS, setFromDateBS] = useState("2081-01-01");
@@ -294,7 +299,7 @@ function Dashboard() {
       <div className="no-print">
         <PageHeader
           title="Dashboard"
-          description={`Namaste Suman — showing revenue and insights for ${branchScopeLabel}.`}
+          description={`Namaste ${activeUser.name.split(" ")[0]} — showing revenue and insights for ${branchScopeLabel}.`}
           actions={
             <>
               <Button
@@ -487,7 +492,7 @@ function Dashboard() {
             <StatCard label="On Leave" value={onLeave} icon={Users} tone="warning" />
             <StatCard
               label="Subscription"
-              value={subscription.plan}
+              value={currentPlan.charAt(0).toUpperCase() + currentPlan.slice(1)}
               icon={Crown}
               tone="brand"
               hint={"Expires " + subscription.expiryDate}

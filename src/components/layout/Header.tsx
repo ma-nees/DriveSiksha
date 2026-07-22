@@ -29,10 +29,13 @@ import { SidebarContent } from "./Sidebar";
 import { branches, currentUser } from "@/lib/mock-data";
 import { LogoWithName } from "@/components/Logo";
 import { ALL_BRANCHES, useSelectedBranch } from "@/hooks/use-selected-branch";
+import { useAuth } from "../../context/AuthContext";
 
 export function Header() {
   const [open, setOpen] = useState(false);
   const [dark, setDark] = useState(false);
+  const { user, signOut } = useAuth();
+  const activeUser = user ? { name: user.full_name, role: user.role.replace(/_/g, ' ') } : currentUser;
   const [isVerified, setIsVerified] = useState(false);
 
   useEffect(() => {
@@ -179,7 +182,7 @@ export function Header() {
           >
             <Avatar className="h-8 w-8">
               <AvatarFallback className="bg-brand text-brand-foreground text-xs font-semibold">
-                {currentUser.name
+                {activeUser.name
                   .split(" ")
                   .map((n) => n[0])
                   .join("")
@@ -191,12 +194,12 @@ export function Header() {
         <DropdownMenuContent align="end" className="w-56">
           <DropdownMenuLabel>
             <div className="text-sm font-semibold flex items-center gap-1">
-              {currentUser.name}
+              {activeUser.name}
               {isVerified && (
                 <CheckCircle2 className="h-3.5 w-3.5 text-emerald-500 fill-emerald-500/10 shrink-0" />
               )}
             </div>
-            <div className="text-xs text-muted-foreground font-normal">{currentUser.role}</div>
+            <div className="text-xs text-muted-foreground font-normal">{activeUser.role}</div>
           </DropdownMenuLabel>
           <DropdownMenuSeparator />
           <DropdownMenuItem
@@ -213,8 +216,13 @@ export function Header() {
             <Link to="/branding">Branding</Link>
           </DropdownMenuItem>
           <DropdownMenuSeparator />
-          <DropdownMenuItem asChild>
-            <Link to="/login">Sign out</Link>
+          <DropdownMenuItem
+            onClick={async () => {
+              await signOut();
+            }}
+            className="cursor-pointer text-accent-red hover:bg-accent-red/10 font-medium"
+          >
+            Sign out
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>

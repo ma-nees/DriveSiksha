@@ -10,6 +10,7 @@ import { subscription, plans } from "@/lib/mock-data";
 import { formatNPR } from "@/lib/format";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
+import { useAuth } from "../../context/AuthContext";
 
 export const Route = createFileRoute("/_admin/subscription")({
   component: SubscriptionPage,
@@ -17,6 +18,9 @@ export const Route = createFileRoute("/_admin/subscription")({
 });
 
 function SubscriptionPage() {
+  const { school } = useAuth();
+  const currentPlanName = school?.subscription_plan || subscription.plan;
+
   return (
     <>
       <PageHeader
@@ -36,7 +40,7 @@ function SubscriptionPage() {
                 <ShieldCheck className="h-4 w-4" /> Current Plan Status
               </div>
               <div className="text-2xl sm:text-4xl font-bold flex items-center gap-2.5 mt-1">
-                {subscription.plan} Plan
+                {currentPlanName.charAt(0).toUpperCase() + currentPlanName.slice(1)} Plan
                 <span className="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-white/20 text-white border border-white/20 uppercase tracking-wider">
                   Active
                 </span>

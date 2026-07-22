@@ -23,18 +23,25 @@ export const Route = createFileRoute("/login")({
   }),
 });
 
+import { useAuth } from "../context/AuthContext";
+
 function LoginPage() {
   const [show, setShow] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const navigate = useNavigate();
+  const [email, setEmail] = useState("admin@drivesiksha.com.np");
+  const [password, setPassword] = useState("demopass");
+  const [rememberMe, setRememberMe] = useState(true);
 
-  function onSubmit(e: React.FormEvent) {
+  const navigate = useNavigate();
+  const { signIn, loading } = useAuth();
+
+  async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
-    setLoading(true);
-    setTimeout(() => {
-      toast.success("Welcome back!");
+    try {
+      await signIn(email, password, rememberMe);
       navigate({ to: "/dashboard" });
-    }, 700);
+    } catch (err: any) {
+      // toast error is already fired in AuthContext
+    }
   }
 
   return (
@@ -92,11 +99,13 @@ function LoginPage() {
             </div>
             <form onSubmit={onSubmit} className="space-y-4">
               <div className="space-y-1.5">
-                <Label htmlFor="email">Email or phone</Label>
+                <Label htmlFor="email">Email address</Label>
                 <Input
                   id="email"
-                  type="text"
-                  defaultValue="admin@drivesiksha.com.np"
+                  type="email"
+                  required
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                   className="h-11"
                 />
               </div>
@@ -114,7 +123,9 @@ function LoginPage() {
                   <Input
                     id="password"
                     type={show ? "text" : "password"}
-                    defaultValue="demopass"
+                    required
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
                     className="h-11 pr-10"
                   />
                   <button
@@ -128,7 +139,11 @@ function LoginPage() {
                 </div>
               </div>
               <label className="flex items-center gap-2 text-sm cursor-pointer select-none">
-                <Checkbox defaultChecked /> <span>Remember me for 30 days</span>
+                <Checkbox
+                  checked={rememberMe}
+                  onCheckedChange={(checked) => setRememberMe(!!checked)}
+                />{" "}
+                <span>Remember me</span>
               </label>
               <Button
                 type="submit"
@@ -138,11 +153,19 @@ function LoginPage() {
                 {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                 Sign in
               </Button>
-              <div className="text-xs text-center text-muted-foreground pt-2 space-y-1">
+              <div className="text-xs text-center text-muted-foreground pt-2 space-y-1.5">
                 <div>
                   Don't have an account?{" "}
                   <Link to="/register" className="text-brand font-medium hover:underline">
                     Register driving school
+                  </Link>
+                </div>
+                <div className="border-t border-border/60 my-2 pt-2">
+                  <Link
+                    to="/accept-invitation"
+                    className="text-brand hover:underline text-xs"
+                  >
+                    Have an invitation? Accept invite
                   </Link>
                 </div>
               </div>

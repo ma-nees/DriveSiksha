@@ -22,6 +22,7 @@ import { LogoWithName } from "@/components/Logo";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { currentUser } from "@/lib/mock-data";
 import { cn } from "@/lib/utils";
+import { useAuth } from "../../context/AuthContext";
 
 export const navGroups = [
   {
@@ -62,6 +63,8 @@ export const navGroups = [
 export function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const [isVerified, setIsVerified] = useState(false);
+  const { user, signOut } = useAuth();
+  const activeUser = user ? { name: user.full_name, role: user.role.replace(/_/g, ' ') } : currentUser;
 
   useEffect(() => {
     setIsVerified(!!localStorage.getItem("drivesiksha_certificate"));
@@ -130,7 +133,7 @@ export function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
         <div className="flex items-center gap-3 p-2 rounded-xl bg-sidebar-accent/40 border border-sidebar-border/40">
           <Avatar className="h-8 w-8 shrink-0">
             <AvatarFallback className="bg-brand text-brand-foreground text-xs font-bold">
-              {currentUser.name
+              {activeUser.name
                 .split(" ")
                 .map((n) => n[0])
                 .join("")
@@ -139,25 +142,27 @@ export function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
           </Avatar>
           <div className="min-w-0 flex-1">
             <div className="text-xs font-bold truncate text-sidebar-foreground flex items-center gap-1">
-              {currentUser.name}
+              {activeUser.name}
               {isVerified && (
                 <CheckCircle2 className="h-3 w-3 text-emerald-500 fill-emerald-500/10 shrink-0" />
               )}
             </div>
             <div className="text-[10px] text-sidebar-foreground/60 truncate">
-              {currentUser.role}
+              {activeUser.role}
             </div>
           </div>
         </div>
 
-        <Link
-          to="/login"
-          onClick={onNavigate}
-          className="flex min-h-[40px] items-center justify-center gap-2 rounded-xl px-3 py-2 text-xs font-semibold text-accent-red hover:bg-accent-red/10 transition-colors w-full border border-accent-red/20"
+        <button
+          onClick={async () => {
+            if (onNavigate) onNavigate();
+            await signOut();
+          }}
+          className="flex min-h-[40px] items-center justify-center gap-2 rounded-xl px-3 py-2 text-xs font-semibold text-accent-red hover:bg-accent-red/10 transition-colors w-full border border-accent-red/20 cursor-pointer"
         >
           <LogOut className="h-4 w-4" />
           Sign Out Account
-        </Link>
+        </button>
       </div>
     </div>
   );

@@ -34,9 +34,11 @@ export const Route = createFileRoute("/register")({
   }),
 });
 
+import { useAuth } from "../context/AuthContext";
+
 function RegisterPage() {
   const [show, setShow] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [showConfirm, setShowConfirm] = useState(false);
   const [agreed, setAgreed] = useState(false);
 
   const [fullName, setFullName] = useState("");
@@ -44,45 +46,74 @@ function RegisterPage() {
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
-
-  const [certificate, setCertificate] = useState<string | null>(null);
-  const [certificateName, setCertificateName] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
 
   const navigate = useNavigate();
+  const { signUp, loading } = useAuth();
 
-  const handleCertificateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      setCertificateName(file.name);
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setCertificate(reader.result as string);
-      };
-      reader.readAsDataURL(file);
+  // Nepal phone helper
+  const cleanAndValidateNepalPhone = (num: string): boolean => {
+    const clean = num.replace(/[\s\-()]/g, '').replace(/^\+977|^977/, '');
+    return /^(98|97|96)\d{8}$/.test(clean) || /^0\d{8}$/.test(clean);
+  };
+
+  // Password strength calculation
+  const getPasswordStrength = (pass: string) => {
+    let score = 0;
+    if (pass.length >= 8) score++;
+    if (/[A-Z]/.test(pass)) score++;
+    if (/[a-z]/.test(pass)) score++;
+    if (/\d/.test(pass)) score++;
+    if (/[@$!%*?&#^()_\-+=]/.test(pass)) score++;
+
+    switch (score) {
+      case 0:
+      case 1:
+      case 2:
+        return { label: "Weak", color: "bg-red-500", text: "text-red-500", score };
+      case 3:
+      case 4:
+        return { label: "Medium", color: "bg-yellow-500", text: "text-yellow-500", score };
+      case 5:
+        return { label: "Strong", color: "bg-emerald-500", text: "text-emerald-500", score };
+      default:
+        return { label: "Weak", color: "bg-red-500", text: "text-red-500", score };
     }
   };
 
-  function onSubmit(e: React.FormEvent) {
+  const strength = getPasswordStrength(password);
+
+  async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
+
     if (!agreed) {
       toast.error("You must agree to the Terms of Service and Privacy Policy.");
       return;
     }
-    if (!certificate) {
-      toast.error("Please upload your school's verified certificate.");
+
+    if (password !== confirmPassword) {
+      toast.error("Passwords do not match.");
       return;
     }
-    setLoading(true);
-    setTimeout(() => {
-      localStorage.setItem("drivesiksha_certificate", certificate);
-      localStorage.setItem("drivesiksha_certificate_name", certificateName);
-      localStorage.setItem("drivesiksha_school_name", schoolName);
 
-      toast.success("Registration successful! Welcome to DriveSiksha.");
-      // Trigger a storage event so other open pages know the cert has been set
-      window.dispatchEvent(new Event("storage"));
-      navigate({ to: "/dashboard" });
-    }, 1200);
+    // Phone validation
+    if (!cleanAndValidateNepalPhone(phone)) {
+      toast.error("Invalid Nepal phone number. Please enter a valid 10-digit mobile number.");
+      return;
+    }
+
+    // Password strength check
+    if (strength.score < 5) {
+      toast.error("Password must be at least 8 characters long and contain uppercase, lowercase, a number, and a special character.");
+      return;
+    }
+
+    try {
+      await signUp(fullName, schoolName, email, phone, password);
+      navigate({ to: "/login" });
+    } catch (err: any) {
+      // toast is already fired inside AuthContext
+    }
   }
 
   return (
@@ -204,33 +235,6 @@ function RegisterPage() {
               </div>
 
               <div className="space-y-1.5">
-                <Label htmlFor="certificate">Verified School Certificate *</Label>
-                <div className="relative border-2 border-dashed rounded-lg p-3.5 hover:bg-muted/50 transition-colors cursor-pointer text-center bg-card">
-                  <Input
-                    id="certificate"
-                    type="file"
-                    required
-                    accept="image/*,.pdf"
-                    onChange={handleCertificateChange}
-                    className="hidden"
-                  />
-                  <label htmlFor="certificate" className="cursor-pointer space-y-1 block">
-                    <UploadCloud className="mx-auto h-6 w-6 text-muted-foreground animate-pulse" />
-                    <span className="text-xs text-muted-foreground block font-medium">
-                      {certificateName ? (
-                        <span className="text-brand flex items-center justify-center gap-1">
-                          <FileText className="h-4 w-4 shrink-0 text-emerald-500" />
-                          <span className="truncate max-w-[200px]">{certificateName}</span>
-                        </span>
-                      ) : (
-                        "Upload registration certificate (PNG, JPG, or PDF)"
-                      )}
-                    </span>
-                  </label>
-                </div>
-              </div>
-
-              <div className="space-y-1.5">
                 <Label htmlFor="password">Password *</Label>
                 <div className="relative">
                   <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
@@ -250,6 +254,51 @@ function RegisterPage() {
                     aria-label={show ? "Hide password" : "Show password"}
                   >
                     {show ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                  </button>
+                </div>
+                {password.length > 0 && (
+                  <div className="mt-1.5 space-y-1">
+                    <div className="flex justify-between items-center text-xs">
+                      <span className="text-muted-foreground">Password strength:</span>
+                      <span className={`font-semibold ${strength.text}`}>{strength.label}</span>
+                    </div>
+                    <div className="h-1.5 w-full bg-muted rounded-full overflow-hidden">
+                      <div
+                        className={`h-full ${strength.color} transition-all duration-300`}
+                        style={{ width: `${(strength.score / 5) * 100}%` }}
+                      />
+                    </div>
+                    <div className="text-[10px] text-muted-foreground leading-tight space-y-0.5">
+                      <p className={password.length >= 8 ? "text-emerald-500" : ""}>✓ At least 8 characters</p>
+                      <p className={/[A-Z]/.test(password) ? "text-emerald-500" : ""}>✓ At least one uppercase letter</p>
+                      <p className={/[a-z]/.test(password) ? "text-emerald-500" : ""}>✓ At least one lowercase letter</p>
+                      <p className={/\d/.test(password) ? "text-emerald-500" : ""}>✓ At least one number</p>
+                      <p className={/[@$!%*?&#^()_\-+=]/.test(password) ? "text-emerald-500" : ""}>✓ At least one special character</p>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              <div className="space-y-1.5">
+                <Label htmlFor="confirmPassword">Confirm Password *</Label>
+                <div className="relative">
+                  <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                  <Input
+                    id="confirmPassword"
+                    type={showConfirm ? "text" : "password"}
+                    required
+                    placeholder="Repeat password"
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    className="h-11 pl-10 pr-10"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowConfirm((s) => !s)}
+                    className="absolute right-2.5 top-1/2 -translate-y-1/2 text-muted-foreground p-1"
+                    aria-label={showConfirm ? "Hide password" : "Show password"}
+                  >
+                    {showConfirm ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                   </button>
                 </div>
               </div>
