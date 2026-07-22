@@ -30,6 +30,8 @@ import { branches, currentUser } from "@/lib/mock-data";
 import { LogoWithName } from "@/components/Logo";
 import { ALL_BRANCHES, useSelectedBranch } from "@/hooks/use-selected-branch";
 import { useAuth } from "../../context/AuthContext";
+import { toast } from "sonner";
+import { cn } from "@/lib/utils";
 
 export function Header() {
   const [open, setOpen] = useState(false);
