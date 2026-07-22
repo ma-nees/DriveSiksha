@@ -105,7 +105,22 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   useEffect(() => {
-    // 1. Get initial session
+    // 1. Get initial mock session if exists
+    const mockSessionStr = localStorage.getItem("drivesiksha_mock_session");
+    if (mockSessionStr) {
+      try {
+        const { session: mSession, user: mUser, school: mSchool } = JSON.parse(mockSessionStr);
+        setSession(mSession);
+        setUser(mUser);
+        setSchool(mSchool);
+        setLoading(false);
+        return;
+      } catch (e) {
+        localStorage.removeItem("drivesiksha_mock_session");
+      }
+    }
+
+    // 2. Get initial supabase session
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
       if (session?.user) {
@@ -115,9 +130,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
     });
 
-    // 2. Listen for auth state changes
+    // 3. Listen for auth state changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, currentSession) => {
+        // If there's a mock session, skip state updates from supabase listener
+        if (localStorage.getItem("drivesiksha_mock_session")) return;
+
         setSession(currentSession);
         
         if (currentSession?.user) {
@@ -140,6 +158,66 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const signIn = async (email: string, password: string, rememberMe: boolean = false) => {
     setLoading(true);
     try {
+      // Check if credentials are the default mock credentials and Supabase is not fully set up
+      const isPlaceholderEnv = 
+        !import.meta.env.VITE_SUPABASE_URL || 
+        import.meta.env.VITE_SUPABASE_URL.includes("your-project-id");
+
+      if (isPlaceholderEnv && email === "admin@drivesiksha.com.np" && password === "demopass") {
+        const mockProfile: UserProfile = {
+          id: "mock-user-id",
+          auth_user_id: "mock-auth-id",
+          school_id: "mock-school-id",
+          branch_id: "mock-branch-id",
+          full_name: "Suman Shrestha",
+          email: "admin@drivesiksha.com.np",
+          phone: "9841234567",
+          avatar: null,
+          role: "SCHOOL_SUPER_ADMIN",
+          status: "active",
+          created_at: new Date().toISOString()
+        };
+        const mockSchool: School = {
+          id: "mock-school-id",
+          school_name: "DriveSiksha Kathmandu",
+          slug: "drivesiksha-kathmandu",
+          email: "info@drivesiksha.com.np",
+          phone: "+977 01-4567890",
+          logo: null,
+          address: "Baneshwor, Kathmandu, Nepal",
+          subscription_plan: "trial",
+          status: "active",
+          created_at: new Date().toISOString()
+        };
+        const mockSession = {
+          access_token: "mock-token",
+          refresh_token: "mock-refresh",
+          expires_in: 3600,
+          token_type: "bearer",
+          user: {
+            id: "mock-auth-id",
+            email: "admin@drivesiksha.com.np",
+            app_metadata: {},
+            user_metadata: {},
+            aud: "authenticated",
+            created_at: new Date().toISOString()
+          }
+        } as any;
+
+        setSession(mockSession);
+        setUser(mockProfile);
+        setSchool(mockSchool);
+        localStorage.setItem('drivesiksha_school_name', mockSchool.school_name);
+        localStorage.setItem("drivesiksha_mock_session", JSON.stringify({
+          session: mockSession,
+          user: mockProfile,
+          school: mockSchool
+        }));
+        
+        toast.success("Successfully logged in (Demo Mode)!");
+        return;
+      }
+
       const response = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -200,18 +278,25 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const signOut = async () => {
     setLoading(true);
     try {
-      const token = session?.access_token;
-      if (token) {
-        await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/auth/logout`, {
-          method: 'POST',
-          headers: { 'Authorization': `Bearer ${token}` }
-        });
+      // Clear mock session first
+      const wasMock = !!localStorage.getItem("drivesiksha_mock_session");
+      localStorage.removeItem("drivesiksha_mock_session");
+
+      if (!wasMock) {
+        const token = session?.access_token;
+        if (token) {
+          await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/auth/logout`, {
+            method: 'POST',
+            headers: { 'Authorization': `Bearer ${token}` }
+          });
+        }
+        const { error } = await supabase.auth.signOut();
+        if (error) throw error;
       }
 
-      const { error } = await supabase.auth.signOut();
-      if (error) throw error;
       setUser(null);
       setSchool(null);
+      setSession(null);
       toast.success('Logged out successfully');
     } catch (err: any) {
       toast.error(err.message || 'Error signing out.');
