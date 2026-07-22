@@ -2,6 +2,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
 import { branches, students, payments, instructors } from "@/lib/mock-data";
+import logoUrl from "@/assets/Logo.png";
 import { PageHeader } from "@/components/PageHeader";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -65,6 +66,8 @@ function SettingsPage() {
       month: "long",
       day: "numeric",
     });
+
+    const fullLogoUrl = logoUrl.startsWith("http") ? logoUrl : `${window.location.origin}${logoUrl}`;
 
     const printWindow = window.open("", "_blank");
     if (!printWindow) {
@@ -150,9 +153,12 @@ function SettingsPage() {
       </head>
       <body>
         <div class="header">
-          <div>
-            <h1>DriveSiksha</h1>
-            <div style="font-size: 14px; font-weight: 500; margin-top: 5px;">${schoolName}</div>
+          <div style="display: flex; align-items: center; gap: 12px;">
+            <img src="${fullLogoUrl}" alt="DriveSiksha Logo" style="width: 40px; height: 40px; object-fit: contain;" />
+            <div>
+              <h1 style="margin: 0; font-size: 20px; color: #ef4444; font-weight: 700;">DriveSiksha</h1>
+              <div style="font-size: 13px; font-weight: 500; margin-top: 2px; color: #666;">${schoolName}</div>
+            </div>
           </div>
           <div class="header-meta">
             <div><strong>Document Type:</strong> Database Backup Report</div>
