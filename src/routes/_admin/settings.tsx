@@ -3,6 +3,8 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
 import { branches, students, payments, instructors } from "@/lib/mock-data";
 import logoUrl from "@/assets/Logo.png";
+import { useAuth } from "../../context/AuthContext";
+import { supabase } from "@/lib/supabaseClient";
 import { PageHeader } from "@/components/PageHeader";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -25,13 +27,76 @@ export const Route = createFileRoute("/_admin/settings")({
 });
 
 function SettingsPage() {
+  const { user } = useAuth();
   const [cert, setCert] = useState<string | null>(null);
   const [certName, setCertName] = useState<string>("");
   const [sessionTimeout, setSessionTimeout] = useState("30");
   const [customTimeout, setCustomTimeout] = useState("45");
+  const [exporting, setExporting] = useState(false);
 
-  const handleExportData = () => {
+  const handleExportData = async () => {
+    setExporting(true);
     try {
+      let activeBranches = branches;
+      let activeInstructors = instructors;
+      let activeStudents = students;
+      let activePayments = payments.map(p => ({
+        dateBS: p.dateBS,
+        studentName: p.studentName,
+        paymentMethod: p.paymentMethod,
+        amount: p.amount
+      }));
+
+      const isPlaceholderEnv = 
+        !import.meta.env.VITE_SUPABASE_URL || 
+        import.meta.env.VITE_SUPABASE_URL.includes("your-project-id");
+      const isMockSession = localStorage.getItem("drivesiksha_mock_session");
+
+      if (!isPlaceholderEnv && !isMockSession && user) {
+        toast.info("Fetching database records for backup...");
+        const [resBranches, resInstructors, resStudents, resPayments] = await Promise.all([
+          supabase.from('branches').select('*'),
+          supabase.from('instructors').select('*'),
+          supabase.from('students').select('*'),
+          supabase.from('payments').select('*, students(name)')
+        ]);
+
+        if (resBranches.data) {
+          activeBranches = resBranches.data.map((b: any) => ({
+            id: b.id,
+            name: b.name,
+            address: b.address || '',
+            phone: b.phone || ''
+          }));
+        }
+        if (resInstructors.data) {
+          activeInstructors = resInstructors.data.map((i: any) => ({
+            id: i.id,
+            name: i.name,
+            phone: i.phone,
+            license_category: i.license_category,
+            status: i.status
+          }));
+        }
+        if (resStudents.data) {
+          activeStudents = resStudents.data.map((s: any) => ({
+            id: s.id,
+            name: s.name,
+            phone: s.phone,
+            license_category: s.license_category || '',
+            status: s.status
+          }));
+        }
+        if (resPayments.data) {
+          activePayments = resPayments.data.map((p: any) => ({
+            dateBS: new Date(p.created_at).toLocaleDateString(),
+            studentName: p.students?.name || 'Unknown Student',
+            paymentMethod: p.payment_method,
+            amount: Number(p.amount)
+          }));
+        }
+      }
+
       const exportData = {
         exportedAt: new Date().toISOString(),
         schoolName: localStorage.getItem("drivesiksha_school_name") || "DriveSiksha Driving School",
@@ -40,10 +105,10 @@ function SettingsPage() {
           phone: "+977 01-4567890",
           address: "Kathmandu, Nepal",
         },
-        branches,
-        instructors,
-        students,
-        payments,
+        branches: activeBranches,
+        instructors: activeInstructors,
+        students: activeStudents,
+        payments: activePayments,
       };
 
       const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(exportData, null, 2));
@@ -56,214 +121,284 @@ function SettingsPage() {
       toast.success("School database exported successfully!");
     } catch (error) {
       toast.error("Failed to export data.");
+    } finally {
+      setExporting(false);
     }
   };
 
-  const handleExportDataPDF = () => {
-    const schoolName = localStorage.getItem("drivesiksha_school_name") || "DriveSiksha Driving School";
-    const exportDate = new Date().toLocaleDateString("en-US", {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    });
+  const handleExportDataPDF = async () => {
+    setExporting(true);
+    try {
+      let activeBranches = branches;
+      let activeInstructors = instructors;
+      let activeStudents = students;
+      let activePayments = payments.map(p => ({
+        dateBS: p.dateBS,
+        studentName: p.studentName,
+        paymentMethod: p.paymentMethod,
+        amount: p.amount
+      }));
 
-    const fullLogoUrl = logoUrl.startsWith("http") ? logoUrl : `${window.location.origin}${logoUrl}`;
+      const isPlaceholderEnv = 
+        !import.meta.env.VITE_SUPABASE_URL || 
+        import.meta.env.VITE_SUPABASE_URL.includes("your-project-id");
+      const isMockSession = localStorage.getItem("drivesiksha_mock_session");
 
-    const printWindow = window.open("", "_blank");
-    if (!printWindow) {
-      toast.error("Failed to open print preview. Please check your popup blocker settings.");
-      return;
-    }
+      if (!isPlaceholderEnv && !isMockSession && user) {
+        toast.info("Fetching database records for PDF report...");
+        const [resBranches, resInstructors, resStudents, resPayments] = await Promise.all([
+          supabase.from('branches').select('*'),
+          supabase.from('instructors').select('*'),
+          supabase.from('students').select('*'),
+          supabase.from('payments').select('*, students(name)')
+        ]);
 
-    const htmlContent = `
-      <!DOCTYPE html>
-      <html>
-      <head>
-        <title>DriveSiksha Backup Report - ${schoolName}</title>
-        <style>
-          body {
-            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-            color: #333;
-            margin: 40px;
-            font-size: 12px;
-            line-height: 1.5;
-          }
-          .header {
-            border-bottom: 2px solid #ef4444;
-            padding-bottom: 20px;
-            margin-bottom: 30px;
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-end;
-          }
-          .header h1 {
-            margin: 0;
-            font-size: 24px;
-            color: #ef4444;
-            font-weight: 700;
-          }
-          .header-meta {
-            text-align: right;
-          }
-          h2 {
-            font-size: 16px;
-            color: #111;
-            margin-top: 30px;
-            margin-bottom: 10px;
-            border-bottom: 1px solid #ddd;
-            padding-bottom: 5px;
-          }
-          table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 20px;
-          }
-          th, td {
-            text-align: left;
-            padding: 8px 10px;
-            border-bottom: 1px solid #eee;
-          }
-          th {
-            background-color: #f9f9f9;
-            font-weight: 600;
-            color: #666;
-            font-size: 11px;
-            text-transform: uppercase;
-          }
-          .badge {
-            display: inline-block;
-            padding: 2px 6px;
-            border-radius: 4px;
-            font-size: 10px;
-            font-weight: 500;
-            background-color: #f1f5f9;
-            color: #475569;
-          }
-          .badge-active {
-            background-color: #dcfce7;
-            color: #15803d;
-          }
-          @media print {
-            body { margin: 20px; }
-            .no-print { display: none; }
-            h2 { page-break-after: avoid; }
-            tr { page-break-inside: avoid; }
-          }
-        </style>
-      </head>
-      <body>
-        <div class="header">
-          <div style="display: flex; align-items: center; gap: 12px;">
-            <img src="${fullLogoUrl}" alt="DriveSiksha Logo" style="width: 40px; height: 40px; object-fit: contain;" />
-            <div>
-              <h1 style="margin: 0; font-size: 20px; color: #ef4444; font-weight: 700;">DriveSiksha</h1>
-              <div style="font-size: 13px; font-weight: 500; margin-top: 2px; color: #666;">${schoolName}</div>
+        if (resBranches.data) {
+          activeBranches = resBranches.data.map((b: any) => ({
+            id: b.id,
+            name: b.name,
+            address: b.address || '',
+            phone: b.phone || ''
+          }));
+        }
+        if (resInstructors.data) {
+          activeInstructors = resInstructors.data.map((i: any) => ({
+            id: i.id,
+            name: i.name,
+            phone: i.phone,
+            license_category: i.license_category,
+            status: i.status
+          }));
+        }
+        if (resStudents.data) {
+          activeStudents = resStudents.data.map((s: any) => ({
+            id: s.id,
+            name: s.name,
+            phone: s.phone,
+            license_category: s.license_category || '',
+            status: s.status
+          }));
+        }
+        if (resPayments.data) {
+          activePayments = resPayments.data.map((p: any) => ({
+            dateBS: new Date(p.created_at).toLocaleDateString(),
+            studentName: p.students?.name || 'Unknown Student',
+            paymentMethod: p.payment_method,
+            amount: Number(p.amount)
+          }));
+        }
+      }
+
+      const schoolName = localStorage.getItem("drivesiksha_school_name") || "DriveSiksha Driving School";
+      const exportDate = new Date().toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      });
+
+      const fullLogoUrl = logoUrl.startsWith("http") ? logoUrl : `${window.location.origin}${logoUrl}`;
+
+      const printWindow = window.open("", "_blank");
+      if (!printWindow) {
+        toast.error("Failed to open print preview. Please check your popup blocker settings.");
+        return;
+      }
+
+      const htmlContent = `
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <title>DriveSiksha Backup Report - ${schoolName}</title>
+          <style>
+            body {
+              font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+              color: #333;
+              margin: 40px;
+              font-size: 12px;
+              line-height: 1.5;
+            }
+            .header {
+              border-bottom: 2px solid #ef4444;
+              padding-bottom: 20px;
+              margin-bottom: 30px;
+              display: flex;
+              justify-content: space-between;
+              align-items: flex-end;
+            }
+            .header h1 {
+              margin: 0;
+              font-size: 24px;
+              color: #ef4444;
+              font-weight: 700;
+            }
+            .header-meta {
+              text-align: right;
+            }
+            h2 {
+              font-size: 16px;
+              color: #111;
+              margin-top: 30px;
+              margin-bottom: 10px;
+              border-bottom: 1px solid #ddd;
+              padding-bottom: 5px;
+            }
+            table {
+              width: 100%;
+              border-collapse: collapse;
+              margin-bottom: 20px;
+            }
+            th, td {
+              text-align: left;
+              padding: 8px 10px;
+              border-bottom: 1px solid #eee;
+            }
+            th {
+              background-color: #f9f9f9;
+              font-weight: 600;
+              color: #666;
+              font-size: 11px;
+              text-transform: uppercase;
+            }
+            .badge {
+              display: inline-block;
+              padding: 2px 6px;
+              border-radius: 4px;
+              font-size: 10px;
+              font-weight: 500;
+              background-color: #f1f5f9;
+              color: #475569;
+            }
+            .badge-active {
+              background-color: #dcfce7;
+              color: #15803d;
+            }
+            @media print {
+              body { margin: 20px; }
+              .no-print { display: none; }
+              h2 { page-break-after: avoid; }
+              tr { page-break-inside: avoid; }
+            }
+          </style>
+        </head>
+        <body>
+          <div class="header">
+            <div style="display: flex; align-items: center; gap: 12px;">
+              <img src="${fullLogoUrl}" alt="DriveSiksha Logo" style="width: 40px; height: 40px; object-fit: contain;" />
+              <div>
+                <h1 style="margin: 0; font-size: 20px; color: #ef4444; font-weight: 700;">DriveSiksha</h1>
+                <div style="font-size: 13px; font-weight: 500; margin-top: 2px; color: #666;">${schoolName}</div>
+              </div>
+            </div>
+            <div class="header-meta">
+              <div><strong>Document Type:</strong> Database Backup Report</div>
+              <div><strong>Export Date:</strong> ${exportDate}</div>
             </div>
           </div>
-          <div class="header-meta">
-            <div><strong>Document Type:</strong> Database Backup Report</div>
-            <div><strong>Export Date:</strong> ${exportDate}</div>
-          </div>
-        </div>
 
-        <h2>1. Branches</h2>
-        <table>
-          <thead>
-            <tr>
-              <th>Branch Name</th>
-              <th>Address</th>
-              <th>Phone</th>
-            </tr>
-          </thead>
-          <tbody>
-            ${branches.map(b => `
+          <h2>1. Branches</h2>
+          <table>
+            <thead>
               <tr>
-                <td><strong>${b.name}</strong></td>
-                <td>${b.address || 'N/A'}</td>
-                <td>${b.phone || 'N/A'}</td>
+                <th>Branch Name</th>
+                <th>Address</th>
+                <th>Phone</th>
               </tr>
-            `).join('')}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              ${activeBranches.map(b => `
+                <tr>
+                  <td><strong>${b.name}</strong></td>
+                  <td>${b.address || 'N/A'}</td>
+                  <td>${b.phone || 'N/A'}</td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
 
-        <h2>2. Instructors</h2>
-        <table>
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Phone</th>
-              <th>Category</th>
-              <th>Status</th>
-            </tr>
-          </thead>
-          <tbody>
-            ${instructors.map(i => `
+          <h2>2. Instructors</h2>
+          <table>
+            <thead>
               <tr>
-                <td><strong>${i.name}</strong></td>
-                <td>${i.phone}</td>
-                <td><span class="badge">${i.license_category}</span></td>
-                <td><span class="badge ${i.status === 'active' ? 'badge-active' : ''}">${i.status}</span></td>
+                <th>Name</th>
+                <th>Phone</th>
+                <th>Category</th>
+                <th>Status</th>
               </tr>
-            `).join('')}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              ${activeInstructors.map(i => `
+                <tr>
+                  <td><strong>${i.name}</strong></td>
+                  <td>${i.phone}</td>
+                  <td><span class="badge">${i.license_category}</span></td>
+                  <td><span class="badge ${i.status === 'active' ? 'badge-active' : ''}">${i.status}</span></td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
 
-        <h2>3. Active Students</h2>
-        <table>
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Phone</th>
-              <th>Category</th>
-              <th>Status</th>
-            </tr>
-          </thead>
-          <tbody>
-            ${students.map(s => `
+          <h2>3. Active Students</h2>
+          <table>
+            <thead>
               <tr>
-                <td><strong>${s.name}</strong></td>
-                <td>${s.phone}</td>
-                <td><span class="badge">${s.license_category || 'N/A'}</span></td>
-                <td><span class="badge ${s.status === 'active' ? 'badge-active' : ''}">${s.status}</span></td>
+                <th>Name</th>
+                <th>Phone</th>
+                <th>Category</th>
+                <th>Status</th>
               </tr>
-            `).join('')}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              ${activeStudents.map(s => `
+                <tr>
+                  <td><strong>${s.name}</strong></td>
+                  <td>${s.phone}</td>
+                  <td><span class="badge">${s.license_category || 'N/A'}</span></td>
+                  <td><span class="badge ${s.status === 'active' ? 'badge-active' : ''}">${s.status}</span></td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
 
-        <h2>4. Recent Payments</h2>
-        <table>
-          <thead>
-            <tr>
-              <th>Date</th>
-              <th>Student</th>
-              <th>Method</th>
-              <th>Amount</th>
-            </tr>
-          </thead>
-          <tbody>
-            ${payments.map(p => `
+          <h2>4. Recent Payments</h2>
+          <table>
+            <thead>
               <tr>
-                <td>${p.dateBS}</td>
-                <td><strong>${p.studentName}</strong></td>
-                <td>${p.paymentMethod}</td>
-                <td>Rs. ${p.amount.toLocaleString()}</td>
+                <th>Date</th>
+                <th>Student</th>
+                <th>Method</th>
+                <th>Amount</th>
               </tr>
-            `).join('')}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              ${activePayments.map(p => `
+                <tr>
+                  <td>${p.dateBS}</td>
+                  <td><strong>${p.studentName}</strong></td>
+                  <td>${p.paymentMethod}</td>
+                  <td>Rs. ${p.amount.toLocaleString()}</td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
 
-        <script>
-          window.onload = function() {
-            window.print();
-          }
-        </script>
-      </body>
-      </html>
-    `;
+          <script>
+            window.onload = function() {
+              window.print();
+            }
+          </script>
+        </body>
+        </html>
+      `;
 
-    printWindow.document.write(htmlContent);
-    printWindow.document.close();
+      printWindow.document.write(htmlContent);
+      printWindow.document.close();
+    } catch (err: any) {
+      toast.error("Failed to query database data.");
+    } finally {
+      setExporting(false);
+    }
   };
+
 
   useEffect(() => {
     const savedCert = localStorage.getItem("drivesiksha_certificate");
@@ -317,19 +452,19 @@ function SettingsPage() {
             <div className="grid grid-cols-2 gap-3">
               <div>
                 <Label className="text-xs mb-1 block">Full name</Label>
-                <Input defaultValue="Suman Shrestha" className="h-11" />
+                <Input defaultValue={user?.full_name || "Suman Shrestha"} className="h-11" />
               </div>
               <div>
                 <Label className="text-xs mb-1 block">Email</Label>
-                <Input defaultValue="admin@drivesiksha.com.np" className="h-11" />
+                <Input defaultValue={user?.email || "admin@drivesiksha.com.np"} className="h-11" />
               </div>
               <div>
                 <Label className="text-xs mb-1 block">Phone</Label>
-                <Input defaultValue="+977 9841000001" className="h-11" />
+                <Input defaultValue={user?.phone || "+977 9841000001"} className="h-11" />
               </div>
               <div>
                 <Label className="text-xs mb-1 block">Role</Label>
-                <Input defaultValue="Driving School Admin" className="h-11" disabled />
+                <Input defaultValue={user?.role ? user.role.replace(/_/g, ' ') : "Driving School Admin"} className="h-11" disabled />
               </div>
             </div>
           </CardContent>
@@ -536,15 +671,17 @@ function SettingsPage() {
                 variant="outline"
                 className="w-full text-xs font-semibold h-10 border-brand/20 hover:bg-brand/5 hover:text-brand cursor-pointer"
                 onClick={handleExportData}
+                disabled={exporting}
               >
-                Export JSON (DB Backup)
+                {exporting ? "Querying JSON..." : "Export JSON (DB Backup)"}
               </Button>
               <Button
                 variant="outline"
                 className="w-full text-xs font-semibold h-10 border-emerald-500/20 hover:bg-emerald-50/50 hover:text-emerald-600 cursor-pointer"
                 onClick={handleExportDataPDF}
+                disabled={exporting}
               >
-                Export PDF Report
+                {exporting ? "Building PDF..." : "Export PDF Report"}
               </Button>
             </div>
           </CardContent>
