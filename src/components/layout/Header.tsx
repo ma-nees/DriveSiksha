@@ -38,6 +38,42 @@ export function Header() {
   const activeUser = user ? { name: user.full_name, role: user.role.replace(/_/g, ' ') } : currentUser;
   const [isVerified, setIsVerified] = useState(false);
 
+  const [notifications, setNotifications] = useState([
+    {
+      id: "n1",
+      title: "New Student Intake",
+      message: "Rajesh Karki registered for Category B driving course.",
+      time: "10m ago",
+      isRead: false,
+    },
+    {
+      id: "n2",
+      title: "Pending Payment",
+      message: "Sita Maharjan has an outstanding balance of NPR 5,000.",
+      time: "2h ago",
+      isRead: false,
+    },
+    {
+      id: "n3",
+      title: "Lesson Rescheduled",
+      message: "Instructor Krishna KC moved lesson to 4:00 PM today.",
+      time: "5h ago",
+      isRead: false,
+    },
+  ]);
+
+  const unreadCount = notifications.filter(n => !n.isRead).length;
+
+  const markAllAsRead = () => {
+    setNotifications(prev => prev.map(n => ({ ...n, isRead: true })));
+    toast.success("All notifications marked as read");
+  };
+
+  const clearAll = () => {
+    setNotifications([]);
+    toast.success("All notifications cleared");
+  };
+
   useEffect(() => {
     setIsVerified(!!localStorage.getItem("drivesiksha_certificate"));
     const handleStorage = () => {
@@ -150,17 +186,73 @@ export function Header() {
       </DropdownMenu>
 
       {/* Notifications */}
-      <Button
-        variant="ghost"
-        size="icon"
-        className="relative h-9 w-9 shrink-0"
-        aria-label="Notifications"
-      >
-        <Bell className="h-4 sm:h-5 w-4 sm:w-5" />
-        <Badge className="absolute -top-0.5 -right-0.5 h-4 min-w-4 p-0 flex items-center justify-center text-[10px] bg-accent-red">
-          3
-        </Badge>
-      </Button>
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="relative h-9 w-9 shrink-0 cursor-pointer"
+            aria-label="Notifications"
+          >
+            <Bell className="h-4 sm:h-5 w-4 sm:w-5" />
+            {unreadCount > 0 && (
+              <Badge className="absolute -top-0.5 -right-0.5 h-4 min-w-4 p-0 flex items-center justify-center text-[10px] bg-accent-red text-white font-bold">
+                {unreadCount}
+              </Badge>
+            )}
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end" className="w-80 p-0 rounded-2xl overflow-hidden shadow-lg border border-border/80">
+          <div className="flex items-center justify-between p-4 border-b border-border/60 bg-muted/20">
+            <span className="font-bold text-sm">Notifications</span>
+            {unreadCount > 0 && (
+              <button
+                onClick={markAllAsRead}
+                className="text-xs text-brand hover:underline cursor-pointer font-medium"
+              >
+                Mark all as read
+              </button>
+            )}
+          </div>
+          <div className="max-h-[300px] overflow-y-auto divide-y divide-border/40">
+            {notifications.length === 0 ? (
+              <div className="flex flex-col items-center justify-center p-8 text-center text-muted-foreground gap-2">
+                <Bell className="h-8 w-8 opacity-20" />
+                <span className="text-xs">No notifications yet</span>
+              </div>
+            ) : (
+              notifications.map((n) => (
+                <div
+                  key={n.id}
+                  className={cn(
+                    "p-3.5 flex flex-col gap-1 transition-colors hover:bg-muted/30 relative",
+                    !n.isRead && "bg-brand/5"
+                  )}
+                >
+                  <div className="flex items-start justify-between gap-2">
+                    <span className="font-semibold text-xs text-foreground leading-snug">{n.title}</span>
+                    <span className="text-[10px] text-muted-foreground shrink-0 mt-0.5">{n.time}</span>
+                  </div>
+                  <p className="text-xs text-muted-foreground leading-normal pr-4">{n.message}</p>
+                  {!n.isRead && (
+                    <span className="absolute right-3.5 top-1/2 -translate-y-1/2 h-2 w-2 rounded-full bg-brand" />
+                  )}
+                </div>
+              ))
+            )}
+          </div>
+          {notifications.length > 0 && (
+            <div className="p-2 border-t border-border/60 text-center bg-muted/20">
+              <button
+                onClick={clearAll}
+                className="text-xs text-muted-foreground hover:text-foreground font-medium py-1 w-full cursor-pointer"
+              >
+                Clear all notifications
+              </button>
+            </div>
+          )}
+        </DropdownMenuContent>
+      </DropdownMenu>
 
       {/* Dark Theme Toggle (Desktop & Tablet) */}
       <Button
