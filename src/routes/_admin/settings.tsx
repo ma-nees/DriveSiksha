@@ -1,6 +1,7 @@
 // ma-nees
 import { createFileRoute } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
+import { branches, students, payments, instructors } from "@/lib/mock-data";
 import { PageHeader } from "@/components/PageHeader";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -25,6 +26,238 @@ export const Route = createFileRoute("/_admin/settings")({
 function SettingsPage() {
   const [cert, setCert] = useState<string | null>(null);
   const [certName, setCertName] = useState<string>("");
+  const [sessionTimeout, setSessionTimeout] = useState("30");
+  const [customTimeout, setCustomTimeout] = useState("45");
+
+  const handleExportData = () => {
+    try {
+      const exportData = {
+        exportedAt: new Date().toISOString(),
+        schoolName: localStorage.getItem("drivesiksha_school_name") || "DriveSiksha Driving School",
+        schoolDetails: {
+          email: "info@drivesiksha.com.np",
+          phone: "+977 01-4567890",
+          address: "Kathmandu, Nepal",
+        },
+        branches,
+        instructors,
+        students,
+        payments,
+      };
+
+      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(exportData, null, 2));
+      const downloadAnchor = document.createElement('a');
+      downloadAnchor.setAttribute("href", dataStr);
+      downloadAnchor.setAttribute("download", `DriveSiksha_FullDataExport_${new Date().toISOString().split('T')[0]}.json`);
+      document.body.appendChild(downloadAnchor);
+      downloadAnchor.click();
+      downloadAnchor.removeChild(downloadAnchor);
+      toast.success("School database exported successfully!");
+    } catch (error) {
+      toast.error("Failed to export data.");
+    }
+  };
+
+  const handleExportDataPDF = () => {
+    const schoolName = localStorage.getItem("drivesiksha_school_name") || "DriveSiksha Driving School";
+    const exportDate = new Date().toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    });
+
+    const printWindow = window.open("", "_blank");
+    if (!printWindow) {
+      toast.error("Failed to open print preview. Please check your popup blocker settings.");
+      return;
+    }
+
+    const htmlContent = `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <title>DriveSiksha Backup Report - ${schoolName}</title>
+        <style>
+          body {
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            color: #333;
+            margin: 40px;
+            font-size: 12px;
+            line-height: 1.5;
+          }
+          .header {
+            border-bottom: 2px solid #ef4444;
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+          }
+          .header h1 {
+            margin: 0;
+            font-size: 24px;
+            color: #ef4444;
+            font-weight: 700;
+          }
+          .header-meta {
+            text-align: right;
+          }
+          h2 {
+            font-size: 16px;
+            color: #111;
+            margin-top: 30px;
+            margin-bottom: 10px;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 5px;
+          }
+          table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+          }
+          th, td {
+            text-align: left;
+            padding: 8px 10px;
+            border-bottom: 1px solid #eee;
+          }
+          th {
+            background-color: #f9f9f9;
+            font-weight: 600;
+            color: #666;
+            font-size: 11px;
+            text-transform: uppercase;
+          }
+          .badge {
+            display: inline-block;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 10px;
+            font-weight: 500;
+            background-color: #f1f5f9;
+            color: #475569;
+          }
+          .badge-active {
+            background-color: #dcfce7;
+            color: #15803d;
+          }
+          @media print {
+            body { margin: 20px; }
+            .no-print { display: none; }
+            h2 { page-break-after: avoid; }
+            tr { page-break-inside: avoid; }
+          }
+        </style>
+      </head>
+      <body>
+        <div class="header">
+          <div>
+            <h1>DriveSiksha</h1>
+            <div style="font-size: 14px; font-weight: 500; margin-top: 5px;">${schoolName}</div>
+          </div>
+          <div class="header-meta">
+            <div><strong>Document Type:</strong> Database Backup Report</div>
+            <div><strong>Export Date:</strong> ${exportDate}</div>
+          </div>
+        </div>
+
+        <h2>1. Branches</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Branch Name</th>
+              <th>Address</th>
+              <th>Phone</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${branches.map(b => `
+              <tr>
+                <td><strong>${b.name}</strong></td>
+                <td>${b.address || 'N/A'}</td>
+                <td>${b.phone || 'N/A'}</td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+
+        <h2>2. Instructors</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Phone</th>
+              <th>Category</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${instructors.map(i => `
+              <tr>
+                <td><strong>${i.name}</strong></td>
+                <td>${i.phone}</td>
+                <td><span class="badge">${i.license_category}</span></td>
+                <td><span class="badge ${i.status === 'active' ? 'badge-active' : ''}">${i.status}</span></td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+
+        <h2>3. Active Students</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Phone</th>
+              <th>Category</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${students.map(s => `
+              <tr>
+                <td><strong>${s.name}</strong></td>
+                <td>${s.phone}</td>
+                <td><span class="badge">${s.license_category || 'N/A'}</span></td>
+                <td><span class="badge ${s.status === 'active' ? 'badge-active' : ''}">${s.status}</span></td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+
+        <h2>4. Recent Payments</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Student</th>
+              <th>Method</th>
+              <th>Amount</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${payments.map(p => `
+              <tr>
+                <td>${p.dateBS}</td>
+                <td><strong>${p.studentName}</strong></td>
+                <td>${p.paymentMethod}</td>
+                <td>Rs. ${p.amount.toLocaleString()}</td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+
+        <script>
+          window.onload = function() {
+            window.print();
+          }
+        </script>
+      </body>
+      </html>
+    `;
+
+    printWindow.document.write(htmlContent);
+    printWindow.document.close();
+  };
 
   useEffect(() => {
     const savedCert = localStorage.getItem("drivesiksha_certificate");
@@ -264,7 +497,7 @@ function SettingsPage() {
           <CardContent className="space-y-3">
             <div className="flex items-center justify-between">
               <span className="text-sm">Session timeout</span>
-              <Select defaultValue="30">
+              <Select value={sessionTimeout} onValueChange={setSessionTimeout}>
                 <SelectTrigger className="h-9 w-32">
                   <SelectValue />
                 </SelectTrigger>
@@ -273,16 +506,41 @@ function SettingsPage() {
                   <SelectItem value="30">30 min</SelectItem>
                   <SelectItem value="60">1 hour</SelectItem>
                   <SelectItem value="240">4 hours</SelectItem>
+                  <SelectItem value="custom">Custom...</SelectItem>
                 </SelectContent>
               </Select>
             </div>
-            <Button
-              variant="outline"
-              className="w-full"
-              onClick={() => toast.success("Export started. We'll email you when ready.")}
-            >
-              Export all data
-            </Button>
+            {sessionTimeout === "custom" && (
+              <div className="flex items-center justify-between mt-2 pt-2 border-t border-border/40">
+                <Label className="text-xs text-muted-foreground">Custom duration (min)</Label>
+                <div className="flex items-center gap-2">
+                  <Input
+                    type="number"
+                    min="1"
+                    value={customTimeout}
+                    onChange={(e) => setCustomTimeout(e.target.value)}
+                    className="h-8 w-20 text-xs text-right"
+                  />
+                  <span className="text-xs text-muted-foreground">min</span>
+                </div>
+              </div>
+            )}
+            <div className="grid grid-cols-2 gap-2 mt-2">
+              <Button
+                variant="outline"
+                className="w-full text-xs font-semibold h-10 border-brand/20 hover:bg-brand/5 hover:text-brand cursor-pointer"
+                onClick={handleExportData}
+              >
+                Export JSON (DB Backup)
+              </Button>
+              <Button
+                variant="outline"
+                className="w-full text-xs font-semibold h-10 border-emerald-500/20 hover:bg-emerald-50/50 hover:text-emerald-600 cursor-pointer"
+                onClick={handleExportDataPDF}
+              >
+                Export PDF Report
+              </Button>
+            </div>
           </CardContent>
         </Card>
 
