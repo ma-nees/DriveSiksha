@@ -444,12 +444,12 @@ function SettingsPage() {
         description="Account, security, notifications and app preferences."
       />
       <div className="grid gap-4 lg:grid-cols-2">
-        <Card>
+        <Card className="lg:col-span-2">
           <CardHeader>
             <CardTitle className="text-base">Profile</CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
               <div>
                 <Label className="text-xs mb-1 block">Full name</Label>
                 <Input defaultValue={user?.full_name || "Suman Shrestha"} className="h-11" />
